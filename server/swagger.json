@@ -1,0 +1,358 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "final project name",
+    "description": "An API to support the final project platform",
+    "version": "1.0.0"
+  },
+  "host": "api.goalworthy.com",
+  "schemes": ["https"],
+  "basePath": "/v1",
+  "produces": ["application/json"],
+  "paths": {
+    "/boards/:user": {
+      "get": {
+        "summary": "Retrieve all boards for logged in user",
+        "description": "The /boards endpoint allows you to retrieve the user's boards.\n",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search query string",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": ["Boards"],
+        "responses": {
+          "200": {
+            "description": "An array of boards",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Board"
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/boards/{id}": {
+      "get": {
+        "summary": "Retrieve a board through its ID",
+        "description": "The /boards/{id} endpoint allows you to retrieve a specific board.\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the board",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["Boards"],
+        "responses": {
+          "200": {
+            "description": "The board in question",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Board"
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "schema": {
+              "$ref": "#/definitions/Board"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a board",
+        "description": "The PUT /boards/{id} endpoint allows you to update a board's properties (ie. collabCanvasImg, sharedMedia, chatFunc, settings)\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the board",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": ["Boards"],
+        "responses": {
+          "200": {
+            "description": "The board in question",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Board"
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "schema": {
+              "$ref": "#/definitions/Board"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/boards/new": {
+      "post": {
+        "summary": "Creating a new board",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "board",
+            "description": "The board to create.",
+            "schema": {
+              "$ref": "#/definitions/Board"
+            }
+          }
+        ],
+        "tags": ["Boards"],
+        "responses": {
+          "200": {
+            "description": "The new board",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Board"
+              }
+            }
+          },
+          "400": {
+            "description": "The server could not understand the request due to invalid syntax.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login to user account.",
+        "description": "The /api/login endpoint allows a user to log in to their account.\n",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "Log in successful",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "User name or password is incorrect",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "Log out of user account.",
+        "description": "The /api/logout endpoint allows a user to log out of their account.\n",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "Log out successful",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "default": {
+            "description": "There was an unexpected error with logging user out.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "User's profile",
+        "description": "The User endpoint returns information about the user's profile and boards.",
+        "tags": ["User"],
+        "responses": {
+          "200": {
+            "description": "Profile and boards information for a user",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "User need to be logged in to access cart",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Board": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier given to the board"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the board"
+        },
+        "user": {
+          "type": "string",
+          "description": "The user who created the board"
+        },
+        "boardInfo": {
+          "type": "object",
+          "description": "The structural properties of the board",
+          "properties": {
+            "collabCanvasFunc": {
+              "type": "boolean",
+              "description": "Is there a collaborative canvas?"
+            },
+            "collabCanvasImg": {
+              "type": "string",
+              "description": "If there is a collaborative canvas, is there a user-uploaded image?"
+            },
+            "sharedMedia": {
+              "type": "string",
+              "description": "Link to the shared media user is displaying in board"
+            },
+            "chatFunc": {
+              "type": "boolean",
+              "description": "Is there chatroom functionality in the board?"
+            }
+          }
+        },
+        "authUsers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "example": [
+            {
+              "id": 1,
+              "name": "ruthieAllen"
+            },
+            {
+              "id": 2,
+              "name": "kameronS"
+            }
+          ],
+          "description": "The authorized users who are permitted to enter the Board"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "description": "First name of the mello user."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name of the mello user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the mello user"
+        },
+        "boards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "users": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
