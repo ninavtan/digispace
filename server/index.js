@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const mainRoutes = require('./routes/main');
+const authRoutes = require("./routes/auth");
 const path = require('path');
 
 var router = express.Router();
@@ -33,7 +34,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', mainRoutes);
+app.use(mainRoutes);
+app.use('/', authRoutes);
+
 
 app.get("/api", (req, res) => {
   res.json({message: "Hello from Express!"});

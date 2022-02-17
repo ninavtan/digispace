@@ -6,6 +6,8 @@ import {
   Route
 } from "react-router-dom";
 import Canvas from './features/Canvas';
+import Home from './features/Home';
+import Login from './features/auth/Login';
 
 function App() {
   const [data, setData] = React.useState(null);
@@ -17,9 +19,12 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<Canvas/>} />
-    </Routes>
+      <Routes>
+        <Route exact path="/login" element={<Login/>} />
+
+        <Route exact path="/home" element={<Home/>} />
+  </Routes>
+    
   );  
 
 }

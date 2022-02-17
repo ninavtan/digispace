@@ -4,12 +4,19 @@ const Schema = mongoose.Schema;
 const Room = require("../models/room");
 
 const UserSchema = new Schema({
-    username: String,
+    username: {
+        type: String,
+        required: true,
+    },
+    password: String,
     first_name: String,
     last_name: String,
-    email: String,
+    email: {
+        type: String,
+        required: true,
+    },
     rooms: [{ type: Schema.Types.ObjectId, ref: "Room" }]
     
-});
+}, {timestamps: true});
 
 module.exports = mongoose.model("User", UserSchema);
