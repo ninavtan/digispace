@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from "react-router-dom";
 import { fetchCurrentRoom } from '../redux/actions';
 import Canvas from './Canvas';
+import RoomHeader from './RoomHeader';
 
 
 export default function Room(props) {
@@ -17,26 +18,23 @@ export default function Room(props) {
 
   let image;
 
+ 
+  const currentRoom = useSelector(state => state.currentRoom);
+
   const currentRoomSettings = useSelector(state => state.currentRoom.roomSettings);
+  
   console.log('Current Room Settings: ', currentRoomSettings);
-  // let image = (currentRoomSettings.collabCanvasImg);
   if (currentRoomSettings !== null) {
     image = currentRoomSettings.collabCanvasImg;
   } else {
     image = null;
   }
-  // const imageLink = currentRoomSettings.collabCanvasImg;
-  // console.log(currentRoomSettings.collabCanvasImg);
- // import Canvas element
- // pass stuff to Canvas (image link, collab canvas, etc)
-
+  
   return (
     <div className="container">
+      <RoomHeader name={currentRoom.name}/>
+      {/* <h1>{currentRoom.name}</h1> */}
       {currentRoomSettings !== null ? <Canvas image={image}/> : <Canvas />}
-
-      <h1>HI!</h1>
-
-      {/* <img className="img" src={currentRoomSettings.collabCanvasImg} alt="user-uploaded"></img> */}
 
     </div>
 
