@@ -56,13 +56,13 @@ router.get("/create-new-data", (req, res, next) => {
   });
 
   let settingsOne = new Settings({
-    name: 'Fun & Games',
+    name: `fantasy world settings`,
     userCreated: null,
     roomId: null,
     collabCanvasFunc: true,
     collabCanvasImg: 'https://drive.google.com/uc?id=135G6ScVhaUh0nJmE24HHaRiV326_UJRa',
     sharedMedia: null,
-    chatFunc: true
+    chatFunc: false,
   });
 
   // userOne.save((err) => {
@@ -83,7 +83,7 @@ router.get("/create-new-data", (req, res, next) => {
 router.get("/push-new-data", async (req, res, next) => {
   userOne = await User.findOne({ username: 'nina777' }).exec();
   roomOne = await Room.findOne({ username: `nina's fantasy world 2` }).exec();
-  settingsOne = await Settings.findOne({ name: 'Fun & Games' }).exec();
+  settingsOne = await Settings.findOne({ name: 'fantasy world settings' }).exec();
 
   userOne.rooms.push(roomOne._id);
   userOne.save();
