@@ -6,6 +6,7 @@ import {
   Route
 } from "react-router-dom";
 import Canvas from './features/Canvas';
+// import Canvas from './features/Canvas copy';
 import Home from './features/Home';
 import Login from './features/auth/Login';
 import AuthRoutes from './features/auth/Routes/AuthRoutes';
@@ -23,7 +24,7 @@ function App() {
   }, []);
 
   return (
-      <Routes>
+    <Routes>
 
       
         <Route exact path="/login" element={<Login/>} />

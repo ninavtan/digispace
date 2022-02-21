@@ -1,122 +1,107 @@
-import React, { useState, useRef } from 'react';
-import p5 from 'p5';
+import React, { Component } from 'react';
+import { render } from 'react-dom';
+import { Stage, Layer, Line, Text, Rect } from 'react-konva';
+import PaintingArea from './PaintingArea';
 
 
-class Canvas extends React.Component {
+
+
+class App extends Component {
   constructor(props) {
-    super(props)
-    this.myRef = React.createRef()
-    this.bgImage = this.bgImage.bind(this);
-    console.log('Props!', props);
-    if (props.image !== null) {  
-      this.bgImage = props.image;
-    } else {
-      this.bgImage = '';
-    }
+    super(props);
+    this.drawingRef = React.createRef();
+    this.state = {image: 'poop!'};
+    console.log(props);
 
   }
- 
-  Sketch = (p) => {
-    let bgColor;
-    let penColor;
-    let penWidth;
-    // let bgImage;
 
-      p.preload = () => {
-        this.bgImage = p.loadImage(this.props.imgLink);
+  state = {
+    tool: "brush",
+    color: "#e66465",
+    // image: '',
+    // doneImage: '',
+  };
+
+  handleChangeTool = event => {
+    this.setState({ tool: event.target.value });
+  };
+
+  handleChangeColor = event => {
+    this.setState({ color: event.target.value });
+  };
+
+  handlePaletteColorChanged = color => {
+    this.setState({ color });
+  };
+
+  handlePaintingAreaChanged = value => {
+    // console.log("handlePaintingAreaChanged", value);
+  };
+
+  handleSaveClick = () => {
+    console.log('saved~');
+    let stage = this.drawingRef.current.children[0];
+    console.log(stage);
+    let image = '';
+    var dataURL = stage.toImage({
+        callback(img) {
+        console.log(img);
       }
-  
+    })
+      console.log(image);
     
-    let lines = [];
-
-  // This class will be created every time user draws a line on the canvas
-    class myLine {
-      constructor(penColor, penWidth) {
-        this.px = p.mouseX
-        this.py = p.mouseY
-        this.x = p.pmouseX
-        this.y = p.pmouseY
     
-        this.penColor = penColor
-        this.penWidth = penWidth
-      }
+  }
 
-    // Create a method that shows the line
-      show() {
-        p.stroke(this.penColor)
-        p.strokeWeight(this.penWidth)
-        p.fill(this.penColor)
+
+
+  render() {
     
-        p.line(this.px, this.py, this.x, this.y)
-      }
-    };
 
-    p.setup = () => {
-      const cnv = p.createCanvas(500,500);
+    const { tool, color } = this.state;
 
-      var options = p.createDiv().style('display:flex').class('options');
+    return (
+      <div>
+        <select value={tool} onChange={this.handleChangeTool}>
+          <option value="felt-tip">Felt-Tip</option>
+          <option value="brush">Brush</option>
+          <option value="pencil">Pencil</option>
+          <option value="eraser">Eraser</option>
+        </select>
+        <input type="color" value={color} onChange={this.handleChangeColor} />
+        <button onClick={this.handleSaveClick}>Save</button>
+        
 
-      var optionsTitles = p.createDiv().parent(options);
+        <Stage width={window.innerWidth} height={window.innerHeight} ref={this.drawingRef}
+>
+          <Layer>
+            {/* Will hold image background */}
+            <Rect
+            x={50}
+            y={50}
+            // fill={"blue"}
+            width={500}
+            height={500}>
+            </Rect>
 
-      p.createP('Pen Color').parent(optionsTitles);
-      p.createP('Background Color').parent(optionsTitles);
-      p.createP('Pen Width').parent(optionsTitles);
-
-      var optionsValues = p.createDiv().parent(options).style('margin: 10px; width: 50px');
-
-      penColor = p.createColorPicker('#ffffff').parent(optionsValues)
-      bgColor = p.createColorPicker('#1e1e1e').parent(optionsValues)
-
-      // createSelect(false) means that you can only select one value from list
-      penWidth = p.createSelect(false).parent(optionsValues).style('margin-top: 10px')
-      penWidth.option('5')
-      penWidth.option('15')
-      penWidth.option('20')
-      penWidth.option('25')
-      penWidth.selected('15')
-
-      // Create clear button
-      p.clearBut = p.createButton('Clear').parent(options).style('width: 100px')
-      // Create save button
-      p.saveBut = p.createButton('Save').parent(options).style('width:100px');
-     }
-     p.draw = () => {
-      // p.background(bgImage);
-      p.background(bgColor.value());
-
-    
-      p.clearBut.mousePressed(function() {
-        lines = [];
-      });
-
-      // Saves current drawing
-      p.saveBut.mousePressed(function() {
-        console.log('save');
-      });
-
-      if (p.mouseIsPressed) {
-        var line = new myLine(penColor.value(), penWidth.value())
-        lines.push(line)
-      }
-
-      for (var line of lines) {
-        line.show();
-      }
-     }
-}
-
-componentDidMount() {
-  this.myP5 = new p5(this.Sketch, this.myRef.current)
-}
-
-render() {
-  return (
-    <div className="container">
-      <div ref={this.myRef}>
+            {/* User-interactive canvas */}
+            <PaintingArea
+              x={50}
+              y={50}
+              width={500}
+              height={500}
+              tool={tool}
+              color={color}
+              onChange={this.handlePaintingAreaChanged}
+              image={this.state.image}
+            />
+          </Layer>
+        </Stage>
+        
       </div>
-    </div>
-    
-  )
+    );
+  }
 }
-}
-export default Canvas;
+
+export default App;
+
