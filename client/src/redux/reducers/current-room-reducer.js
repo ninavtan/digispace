@@ -1,4 +1,4 @@
-import { FETCH_ROOMS } from "../actions/types";
+import { FETCH_CURRENT_ROOM } from "../actions/types";
 
 const DEFAULT_STATE = {
   name: null,
@@ -7,15 +7,11 @@ const DEFAULT_STATE = {
   authUsers: null
 }
 
-export default function roomsReducer(state = DEFAULT_STATE, action) {
+export default function currentRoomReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
-    case FETCH_ROOMS:
+    case FETCH_CURRENT_ROOM:
       console.log(action.payload);
-      return action.payload.map(room => 
-        (
-      {...state, name: room.name, user: room.user, roomSettings: room.roomSettings, authUsers: room.authUsers}
-        ));
-    
+      return {...state, name: action.payload.name, user: action.payload.user, roomSettings: action.payload.roomSettings, authUsers: action.payload.authUsers };
     default:
       return state;
   }

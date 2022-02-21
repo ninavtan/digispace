@@ -6,13 +6,27 @@ class Canvas extends React.Component {
   constructor(props) {
     super(props)
     this.myRef = React.createRef()
-  }
-  Sketch = (p) => {
+    this.bgImage = this.bgImage.bind(this);
+    console.log('Props!', props);
+    if (props.image !== null) {  
+      this.bgImage = props.image;
+    } else {
+      this.bgImage = '';
+    }
 
+  }
+ 
+  Sketch = (p) => {
     let bgColor;
     let penColor;
     let penWidth;
+    // let bgImage;
 
+      p.preload = () => {
+        this.bgImage = p.loadImage(this.props.imgLink);
+      }
+  
+    
     let lines = [];
 
   // This class will be created every time user draws a line on the canvas
@@ -67,7 +81,9 @@ class Canvas extends React.Component {
       p.saveBut = p.createButton('Save').parent(options).style('width:100px');
      }
      p.draw = () => {
+      // p.background(bgImage);
       p.background(bgColor.value());
+
     
       p.clearBut.mousePressed(function() {
         lines = [];
