@@ -9,7 +9,6 @@ const cookie = require('cookie');
 const Room = require("../models/room.js");
 const Settings = require("../models/settings.js");
 const User = require("../models/user");
-const { db } = require("../models/user");
 
 
 router.get('/', function(req, res) {
@@ -219,6 +218,39 @@ router.post("/user/:userId/room/new", (req,res,next) => {
 router.put("/user/:userId/room/:roomId", (req, res, next) => {
   console.log(req.body);
 });
+
+router.get("/room/:roomId/gallery", (req, res, next) => {
+  const roomId = req.params.roomId;
+  Room.findById( roomId )
+  .exec((err, targetRoom) => {
+      if (err) return next(err);
+      console.log(targetRoom.gallery);
+      res.send(targetRoom.gallery);
+  })
+});
+
+router.post("/room/:roomId/gallery", (req, res, next) => {
+  const roomId = req.params.roomId;
+  Room.findOneAndUpdate({ _id: '6213bb6edaa5203eb33f579b' })
+  .exec((err, targetRoom) => {
+      if (err) return next(err);
+      // console.log(req.body);
+      targetRoom.gallery.push(req.body);
+      targetRoom.save();
+      res.send(targetRoom.gallery);
+  });
+});
+
+// router.post("/upload", (req, res, next) => {
+//   console.log(req.body);
+//   base64Img.img(req.body, '', '1', function(err, filepath) {
+//     if (err) console.log(err);
+//     console.log(filepath);
+//   })
+
+
+// })
+
 
 
 module.exports = router;

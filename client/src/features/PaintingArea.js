@@ -1,7 +1,12 @@
 import React, { Component } from "react";
+import socketIOClient from "socket.io-client";
 import Konva from "konva";
 import { Image, Rect } from "react-konva";
 import { Html } from 'react-konva-utils';
+
+const ENDPOINT = "http://127.0.0.1:3001";
+
+
 
 
 const initCanvas = (width, height) => {
@@ -69,13 +74,28 @@ const updatePaintingStyle = (canvasContext, { tool, color }) => {
   });
 };
 
-const drawLine = (canvasContext, p1, p2) => {
+const drawLine = (canvasContext, p1, p2, emit) => {
+
   canvasContext.beginPath();
   canvasContext.moveTo(p1.x, p1.y);
   canvasContext.lineTo(p2.x, p2.y);
   canvasContext.closePath();
   canvasContext.stroke();
+
+  if (!emit) {return};
+  // console.log(this.socket);
+  const data = {
+    p1: {x: p1.x, y: p1.y},
+    p2: {y: p2.x, y: p2.y}
+  }
+  this.socket.emit('drawing', {
+    data
+   })
 };
+
+const onDrawingEvent = (data) => {
+  console.log(data);
+}
 
 const getDrawPoints = (stage, image, lastPointerPosition) => {
   const imagePosition = {
@@ -119,6 +139,9 @@ export default class PaintingArea extends Component {
     this.startPainting = this.startPainting.bind(this);
     this.finishPainting = this.finishPainting.bind(this);
     this.processPainting = this.processPainting.bind(this);
+    this.socketRef = React.createRef();
+
+    this.socket = socketIOClient(ENDPOINT);
   }
 
   startPainting() {
@@ -142,20 +165,34 @@ export default class PaintingArea extends Component {
     );
 
     drawLine(this.canvasContext, point1, point2);
-
+    
     this.lastPointerPosition = pointerPosition;
 
     this.update();
+
+    this.sendDrawing(this.canvasContext, point1, point2);
+
+  }
+
+  sendDrawing(canvasContext, point1, point2) {
+    const data = {
+      p1: {x: point1.x, y: point1.y},
+      p2: {x: point2.x, y: point2.y}
+    }
+    this.socket.emit('drawing', data)
   }
 
   componentDidMount() {
     this.stage = this.image.getStage();
-
-   
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
 
+    this.socket.on('drawing', data => {
+      // console.log(data);
+      drawLine(this.canvasContext, data.p1, data.p2);
+      
+    })
 
   }
 
@@ -165,17 +202,18 @@ export default class PaintingArea extends Component {
 
   render() {
     const { x, y, width, height, tool, color, image } = this.props;
-    console.log(image);
     const { canvas, canvasContext } = this;
+   
+
 
     updatePaintingStyle(canvasContext, { tool, color });
 
     return (
 
-      <div className="container">
+      <div className="painting-container">
        
         <Image
-          x={x}
+            x={x}
             y={y}
             width={width}
             height={height}
