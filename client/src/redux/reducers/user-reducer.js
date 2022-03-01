@@ -11,7 +11,6 @@ const DEFAULT_STATE = {
 export default function usersReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case LOGIN_USER:
-      console.log(action.payload);
         return {...state, id: action.payload.data.id, username: action.payload.data.username, rooms: action.payload.data.rooms, token: action.payload.token};
 
     default:
