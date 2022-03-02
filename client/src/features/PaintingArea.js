@@ -7,8 +7,6 @@ import { Html } from 'react-konva-utils';
 const ENDPOINT = "http://127.0.0.1:3001";
 
 
-
-
 const initCanvas = (width, height) => {
   const canvas = document.createElement("canvas");
   const canvasContext = canvas.getContext("2d");

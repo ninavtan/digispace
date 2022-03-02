@@ -280,10 +280,12 @@ router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
       // Check to see if there are images in db.
       if (images.length > 0) {
       // Hardcode first image for development
-      data = images[0].img.data;
+      data = images[1].img.data;
 
       // Convert binary Buffer back to base64
-      data = Buffer.from(images[0].img.data, 'binary').toString('base64');
+      data = Buffer.from(images[1].img.data, 'binary').toString('base64');
+      // data = Buffer.from(images[0].img.data, 'base64');
+
 
       // Response (below) gives an error 413 on client side.
       // res.send(`<img alt="img" src=${data}></img>`);

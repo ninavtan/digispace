@@ -5,7 +5,9 @@ import { fetchCurrentRoom } from '../redux/actions';
 import { fetchGalleryImages } from '../redux/actions';
 import Canvas from './Canvas2';
 import RoomHeader from './RoomHeader';
-import Gallery from './Gallery';
+import styled from 'styled-components';
+
+// import Gallery from './Gallery';
 import Image from './Image';
 import socketIOClient from "socket.io-client";
 
@@ -33,8 +35,8 @@ export default function Room(props) {
   const currentRoomSettings = useSelector(state => state.currentRoom.roomSettings);
 
   const currentGallery = useSelector(state => state.currentRoom.gallery);
-
- 
+  // console.log(currentGallery)
+  // let imgurl = 'data:image/png;base64,' + currentGallery;
 
 
 //////////////////////////// socket.io (in-progress) ///////////////////////
@@ -46,24 +48,68 @@ export default function Room(props) {
   //   });
   // }, []);
 
+  const displayImages = () => {
+    if (currentGallery !== null) {
+    return (
+      <img src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></img>
+      // <Image src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></Image>
+      // currentGallery.map((image) => {
+      //   return (
+      //     <Image src={`data:image/png;base64,${image}`} alt="submitted-drawing"></Image>
+      //   )
+      // })
+    )
+    } else {
+      return (
+        <h2>Images coming soon!</h2>
+      )
+    }
+  }
+
   return (
     <Container fluid className="room-container">
       <RoomHeader name={currentRoom.name}/>
+        <Row xs="auto">
+          <Col xs="7"> 
+            <CanvasContainer>
+              <h3>Leave a cool drawing for other members of this room :)</h3>
+              <Canvas userId={params.userId} roomId={params.roomId} />
+            </CanvasContainer>
+          </Col>
+       
       
-     <Row xs="auto">
-      <Col xs="8"
->
-        <Canvas userId={params.userId} roomId={params.roomId} />
+      <Col xs="5">
+      <GalleryContainer>
+        <Gallery>  
+          <h3>gallery</h3>
+        {displayImages()}
+        </Gallery>  
+      </GalleryContainer>  
       </Col>
        
-      <Col xs="4">
-        <Gallery gallery={currentGallery} />      
-        <img alt='current-gallery' src={currentGallery}></img>
-        
-
-      </Col>
-     </Row>
+    </Row>
       </Container>
 
   )
 }
+const Gallery = styled.div`
+  height: 500px;
+  width: 500px;
+  background-color: #DAEDBD;
+  margin: 0.5em auto;
+  text-align: center;
+
+`
+
+const CanvasContainer = styled.div`
+  border: 1px solid black;
+  // background-color: #DAEDBD;
+  text-align: center;
+  margin: 0.5em auto;
+
+`
+
+const GalleryContainer = styled.div`
+  background-color: #DAEDBD;
+
+`

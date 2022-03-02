@@ -16,7 +16,8 @@ function Gallery(props) {
   return (
    
     <div className="gallery-container">
-      <img alt='hi!' src={props.gallery} />
+      {/* <img alt='hi!' src={props.gallery} /> */}
+      {/* <img alt='current-gallery' src={`data:image/png;base64,${props.gallery}`}></img> */}
 
     </div>
     )
