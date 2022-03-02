@@ -25,7 +25,7 @@ export default function Room(props) {
 
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.userId, params.roomId))
-    dispatch(fetchGalleryImages(params.roomId));
+    dispatch(fetchGalleryImages(params.roomId, params.userId));
 
   }, [params.userId, params.roomId, dispatch]);
 
@@ -34,24 +34,7 @@ export default function Room(props) {
 
   const currentGallery = useSelector(state => state.currentRoom.gallery);
 
-  const imageUrl =
-  "https://i.picsum.photos/id/566/200/300.jpg?hmac=gDpaVMLNupk7AufUDLFHttohsJ9-C17P7L-QKsVgUQU";
-
-  // const [imgUrl, setImgUrl] = useState();
-
-  // const getImg = async () => {
-  //   const response = currentGallery[0];
-  //   // const imageBlob = await response.blob();
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(response);
-  //   reader.onloadend = () => {
-  //     const base64data = reader.result;
-  //     setImgUrl(base64data);
-  //   };
-  // };
-  // useEffect(() => {
-  //   getImg();
-  // }, []);
+ 
 
 
 //////////////////////////// socket.io (in-progress) ///////////////////////
@@ -70,12 +53,13 @@ export default function Room(props) {
      <Row xs="auto">
       <Col xs="8"
 >
-        <Canvas />
+        <Canvas userId={params.userId} roomId={params.roomId} />
       </Col>
        
       <Col xs="4">
         <Gallery gallery={currentGallery} />      
-        <img alt='hi' src='http://localhost:3000/ffa68284-9825-45a7-981c-5cc0a5e70667' />
+        <img alt='current-gallery' src={currentGallery}></img>
+        
 
       </Col>
      </Row>

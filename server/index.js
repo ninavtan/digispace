@@ -8,6 +8,9 @@ const authRoutes = require("./routes/auth");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
+const multer  = require('multer');
+const {GridFsStorage} = require('multer-gridfs-storage');
+const url = "mongodb://localhost/finalproject";
 
 var router = express.Router();
 
@@ -22,6 +25,9 @@ app.use(cors({
 app.use(express.static('./server/public'));
 app.use(bodyParser.json({ limit: '50mb' }));
 
+const storage = new GridFsStorage({ url });
+
+const upload = multer({ storage })
 
 
 const server = http.createServer(app);
@@ -63,12 +69,14 @@ app.use(router);
 
 const port = process.env.PORT || 3001;
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+// app.use(bodyParser.json());
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
+app.use(express.json({limit: '25mb'}));
+app.use(express.urlencoded({limit: '25mb', extended: true}));
 app.use(mainRoutes);
 app.use('/', authRoutes);
 

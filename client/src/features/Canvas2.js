@@ -32,8 +32,8 @@ const Canvas = (props) => {
     console.log('~saved');
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
-    dispatch(postGalleryImage(props.roomId, base64image));
     console.log(base64image);
+    dispatch(postGalleryImage(props.roomId, props.userId, base64image));
   
   }
 
