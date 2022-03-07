@@ -3,14 +3,12 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const http = require('http');
-const mainRoutes = require('./routes/main');
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/routes.js");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
 const passport = require("passport");
 const jwt = require("jwt-simple");
-
 var router = express.Router();
 
 mongoose.connect("mongodb://localhost/finalproject", {
@@ -24,9 +22,7 @@ app.use(cors({
 app.use(express.static('./server/public'));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-const storage = new GridFsStorage({ url });
-
-const upload = multer({ storage })
+app.use(passport.initialize());
 
 
 const server = http.createServer(app);
