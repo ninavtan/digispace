@@ -1,9 +1,10 @@
 const router = require("express").Router();
 // Auth
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const cookie = require('cookie');
-
+const passport = require("passport");
+const jwt = require("jwt-simple");
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const LocalStrategy = require("passport-local").Strategy;
+const JwtStrategy = require("passport-jwt").Strategy;
 
 // Models
 const Room = require("../models/room.js");
@@ -11,10 +12,61 @@ const Settings = require("../models/settings.js");
 const User = require("../models/user");
 const Image = require("../models/image");
 
+const tokenForUser = function (user) {
+  return jwt.encode(
+    {
+      sub: user.myID,
+      iat: Math.round(Date.now() / 1000),
+      exp: Math.round(Date.now() / 1000 + 5 * 60 * 60),
+    },
+    "bananas"
+  );
+};
 
-router.get('/', function(req, res) {
-  res.send('HI!');
-});
+passport.use(
+  "login",
+  new LocalStrategy( (username, password, done) => {
+   
+    // const user = await User.findOne({
+    //   username: username,
+    // });
+
+    // const checkPassword = await user.comparePassword(password);
+    // if (!checkPassword) {
+    //   return done(null, false, {message: 'Incorrect email or password'});
+    // }
+    //   return done(null, { myUser: "user", myID: 1234 }, {message: 'Logged in successfully '});
+    
+
+    const authenticated = username == "Nina" && password == "Tan";
+    console.log("This logs first");
+
+    if (authenticated) {
+      console.log("right password!");
+      return done(null, { myUser: "user", myID: 1234 });
+    } else {
+      console.log('wrong password')
+      return done(null, false);
+    }
+  })
+);
+
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: "bananas",
+};
+
+
+passport.use(
+  "jwt",
+  new JwtStrategy(jwtOptions, function (payload, done) {
+    return done(null, { myUser: "user", myID: payload.sub });
+  })
+);
+
+const requireSignin = passport.authenticate("login", { session: false });
+const requireAuth = passport.authenticate("jwt", { session: false });
+
 
 router.post("/register", async (req, res) => {
   const user = req.body;
@@ -45,109 +97,22 @@ router.post("/register", async (req, res) => {
   }
 })
 
-router.post("/login", (req, res) => {
-  const userLoggingIn = req.body;
+// router.get("/login", function (req, res) {
+//   // This route serves the HTML to the browser
+//   res.sendFile(__dirname + "/login.html");
+// });
 
-  User.findOne({username: userLoggingIn.username})
-  .then(dbUser => {
-    if (!dbUser) {
-      return res.json({
-        message: "Invalid username or password"
-      })
-    }
-    bcrypt.compare(userLoggingIn.password, dbUser.password, function(err, isCorrect){
-      if (err) throw err;
-      console.log(dbUser);
-      if (isCorrect) {
-        const data = {
-          id: dbUser._id,
-          username: dbUser.username,
-          first_name: dbUser.first_name,
-          last_name: dbUser.last_name,
-          rooms: dbUser.rooms
-        }
-        console.log(data);
-        jwt.sign(
-          data,
-          "process.env.JWT_SECRET",
-          {expiresIn: 86400},
-          (err, token) => {
-            if (err) return res.json({message: 'There was an error with creating a jwt token', err})
-            // cookie
-            console.log(token);
-            res.setHeader('Set-Cookie', cookie.serialize("token", token, {
-              path: "/",
-              sameSite: true,
-              httpOnly: true,
-              secure: true,
-              maxAge: 60*60*24 //24 hours
-            } ))
-
-
-            // res.setHeader('Authorization', 'Bearer' + token);
-            // console.log('Just made token: ', token);
-            return res.json({
-              data, token
-            })
-          }
-        )
-      } else {
-        return res.json({
-          message: "Invalid username or password"
-        })
-      }       
-    })
-  })
-})
-
-function verifySession(req, res, next) {
-  let message = "";
-    headerToken = req.headers['authorization'];
-    cookieToken = req.cookies['token'];
-    success = headerToken || cookieToken ? true : false;
-    if (success) {
-        message += "Authorized! Server got token(s):"
-        if (cookieToken) {
-            message += `\nVia cookie: ${cookieToken}`
-        }
-        if (headerToken) {
-            message += `\nVia header: ${headerToken}`
-        }
-        res.send(message)
-        next();
-    } else {
-        res.send("Unauthorized! Server didn't get any tokens!")
-    }
-}
-
-// Middleware function to verify a user -> will be placed before every route we want to protect
-function verifyJWT(req, res, next) {
-  const token = req.cookies["token"]?.split(' ')[1];
-  if (token) {
-    console.log('There is a token and it is: ', token);
-    jwt.verify(token, "process.env.JWT_SECRET", (err, decoded) => {
-      if (err) return res.json({
-        err: err,
-        isLoggedIn: false,
-        message: "Failed to authenticate"
-      })
-      req.user = {};
-      req.user.id = decoded.id
-      req.user.username = decoded.username
-      next()
-    })
-  } else {
-    res.json({message: "incorrect token given", isLoggedIn: false})
-  }
-};
-
-router.get("/getUsername", verifyJWT, (req, res) => {
-  res.json({isLoggedIn: true, username: req.user.username})
+router.post("/login", requireSignin, (req, res, next) => {
+  console.log("Then this logs");
+  res.send({
+    token: tokenForUser(req.user),});
 });
 
-router.get("/isUserAuth", verifyJWT, (req, res) => {
-  return res.json({isLoggedIn:true, username: req.user.username})
-})
+router.get("/protected", requireAuth, function (req, res) {
+  // This route will be secured to only logged in users eventually
+  res.send("Access Granted!");
+
+});
 
 // END OF AUTH ROUTES //
 
@@ -156,12 +121,13 @@ router.get("/user/:user/rooms", (req, res, next) => {
   const userId = req.params.user;
 
   let targetUserRooms = [];
+
   User.findById( userId )
     .populate("rooms")
     .exec((err, targetUser) => {
         if (err) return next(err);
-        targetUserRooms.push(targetUser.rooms);
-        res.send(targetUserRooms);
+        res.send(targetUser.rooms);
+        // res.send(targetUserRooms);
     });
 });
 
@@ -272,7 +238,7 @@ router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
 
 router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
 
-  let data;
+  let data = [];
 
   const query = { room: req.params.roomId };
   Image.find(query)
@@ -280,20 +246,26 @@ router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
       // Check to see if there are images in db.
       if (images.length > 0) {
       // Hardcode first image for development
-      data = images[1].img.data;
+      console.log(`Images is ${images.length} long!`);
+      // console.log(`Images is a ${typeof images}!`);
+      // object (allegedly)
+      // Loop through images
+
+      data = images.map((image) => {
+        return Buffer.from(image.img.data, 'binary').toString('base64');
+      });
 
       // Convert binary Buffer back to base64
-      data = Buffer.from(images[1].img.data, 'binary').toString('base64');
-      // data = Buffer.from(images[0].img.data, 'base64');
+      // data = Buffer.from(images[1].img.data, 'binary').toString('base64');
 
 
       // Response (below) gives an error 413 on client side.
       // res.send(`<img alt="img" src=${data}></img>`);
-      res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': data.length
-      });
-      res.end(data); 
+      // res.writeHead(200, {
+      //   'Content-Type': 'image/png',
+      //   'Content-Length': data.length
+      // });
+      res.send(data); 
       // If there are no images in db, return null
       } else {
         res.send('null');

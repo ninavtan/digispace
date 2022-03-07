@@ -10,29 +10,56 @@ import styled from 'styled-components';
 export default function Home(props){
   let dispatch = useDispatch();
   const navigate = useNavigate();
-  // fetch the user info using useSelector
   const currentUser = useSelector(state => state.user);
-  const rooms = useSelector(state => state.rooms);
-  
+ 
   const token = useSelector(state => state.user.token);
-  console.log(token)
 
-  useEffect(()=> {
+  useEffect(() => {
+    // dispatch(fetchRooms(currentUser.id));
+    const loggedInToken = localStorage.getItem("token");
+    if (!loggedInToken || loggedInToken === 'undefined') {
+      navigate("/home");
+    }
+
+    const user = localStorage.getItem("user");
+    console.log(user);
+
     
-    // dispatch(fetchRooms('620d7a6b681a861b0f6375d9'))
-    // console.log(rooms);
-    console.log(currentUser);
   }, []);
+
+  // const fetchUser = (user) => {
+  //   fetchUser(username)
+  // }
+
+  const rooms = useSelector(state => state.rooms);
+
+  const displayRooms = () => {
+    if (rooms.length > 0) {
+      rooms.forEach(function(room) {
+        return (<h3><Link to={`/user/${currentUser.id}/rooms/${room.id}`}>{room.name}</Link></h3>)
+      })
+    } else {
+      return (
+        <h1>Loading rooms...</h1>
+      )
+    }
+  }
+
 
   return (
     <HomeContainer>
       <h2>Welcome, {currentUser.username}!</h2>
       <h2>Current rooms:</h2>
-      <h2>{currentUser.rooms}</h2>
+      
+    
 
       {currentUser.rooms.map(room => (
-        <div><Link key={currentUser.id} to={`/user/${currentUser.id}/rooms/${room}`}>AYY!</Link></div>
-      ))}
+        <div><Link key={currentUser.id} to={`/user/${currentUser.id}/rooms/${room}`}>{room}</Link></div>
+      ))} 
+
+      {displayRooms()}
+
+      <Link to='/'>Create a new room</Link>
       
     </HomeContainer>
   )
@@ -40,4 +67,7 @@ export default function Home(props){
 
 const HomeContainer = styled.div`
   text-align: center;
+  background-color: pink;
+  height: 100vh;
+  padding: 2em;
 `

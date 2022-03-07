@@ -63,10 +63,17 @@ const getColorStyle = (color = "#323232") => {
   };
 };
 
-const updatePaintingStyle = (canvasContext, { tool, color }) => {
+const getClearStatus = canvasClear => {
+  if (canvasClear) {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+}
+
+const updatePaintingStyle = (canvasContext, { tool, color, canvasClear }) => {
   Object.entries({
     ...getToolStyle(tool),
-    ...getColorStyle(color)
+    ...getColorStyle(color),
+    ...getClearStatus(canvasClear)
   }).forEach(([key, value]) => {
     canvasContext[key] = value;
   });
@@ -122,8 +129,8 @@ const getDrawPoints = (stage, image, lastPointerPosition) => {
 export default class PaintingArea extends Component {
   constructor(props) {
     super(props);
-
-    const { width, height, tool, color } = this.props;
+    console.log(props);
+    const { width, height, tool, color, canvasClear } = this.props;
     const { canvas, canvasContext } = initCanvas(width, height);
 
     updatePaintingStyle(canvasContext, { tool, color });
@@ -194,8 +201,11 @@ export default class PaintingArea extends Component {
 
   }
 
+
   update() {
     this.image.getLayer().batchDraw();
+    
+   
   }
 
   render() {
@@ -209,7 +219,6 @@ export default class PaintingArea extends Component {
     return (
 
       <div className="painting-container">
-       
         <Image
             x={x}
             y={y}
@@ -220,8 +229,7 @@ export default class PaintingArea extends Component {
             ref={node => {
               this.image = node;
             }}
-        />
-        
+        />        
       </div>
       
       

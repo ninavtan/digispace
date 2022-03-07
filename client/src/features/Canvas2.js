@@ -4,7 +4,7 @@ import PaintingArea from './PaintingArea';
 import RedoPaintingArea from './RedoPaintingArea';
 import { POST_GALLERY_IMAGE } from '../redux/actions/types';
 import { useSelector, useDispatch } from 'react-redux';
-import { postGalleryImage } from '../redux/actions';
+import { fetchGalleryImages, postGalleryImage } from '../redux/actions';
 import Gallery from './Gallery';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
@@ -17,6 +17,7 @@ const Canvas = (props) => {
 
   const [tool, setTool] = useState('brush');
   const [color, setColor] = useState('#e66465');
+  const [canvasClear, setCanvasClear] = useState(false);
   const [images, setImages] = useState([]);
 
   
@@ -31,14 +32,29 @@ const Canvas = (props) => {
     setColor(event.target.value);
   }
 
+  const clearCanvas = () => {
+    debugger;
+    setCanvasClear(true);
+    // let stage = drawingRef.current.children[0];
+    let stage = drawingRef.current.children[1];
+  // stage.canvas.context.clear();
+
+   
+  //  layer.find('Circle').destroy();
+  //  layer.draw();
+   
+
+  }
+
   const handleSaveClick = () => {
     console.log('~saved');
-    let stage = drawingRef.current.children[0];
+    let stage = drawingRef.current.children[1];
     let base64image = stage.toDataURL();
     console.log(base64image);
     dispatch(postGalleryImage(props.roomId, props.userId, base64image));
-  
+    dispatch(fetchGalleryImages(props.roomId, props.userId));
   }
+
 
 
   return (
@@ -50,15 +66,11 @@ const Canvas = (props) => {
         <option value="pencil">Pencil</option>
         <option value="eraser">Eraser</option>
         </Form.Select>
-      {/* <select value={tool} onChange={handleChangeTool}>
-        <option value="felt-tip">Felt-Tip</option>
-        <option value="brush">Brush</option>
-        <option value="pencil">Pencil</option>
-        <option value="eraser">Eraser</option>
-      </select>       */}
 
       <input type="color" value={color} onChange={handleChangeColor} />
       <Button onClick={handleSaveClick} variant="outline-success">Save</Button>
+      <Button onClick={clearCanvas} variant="outline-success">Clear Canvas</Button>
+
       </DrawingSettingsContainer>
 
       
@@ -72,15 +84,18 @@ const Canvas = (props) => {
         width={400}
         height={400}>
         </Rect>
+        </Layer>
 
+        <Layer id="canvas-layer">
         {/* User-interactive canvas */}
-        <PaintingArea
+        <PaintingArea className="painting-area"
           x={70}
           y={50}
           width={400}
           height={400}
           tool={tool}
           color={color}
+          canvasClear={canvasClear}
           
         />
         </Layer>

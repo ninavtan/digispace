@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from "../../redux/actions";
 import styled from 'styled-components';
@@ -18,6 +18,18 @@ export default function Login() {
     dispatch(loginUser(form[0].value, form[1].value));
   }
 
+  // async function handleSubmit(event) {
+  //   event.preventDefault();
+  
+  //   try {
+  //     await Auth.signIn(email, password);
+  //     userHasAuthenticated(true);
+  //     history.push("/");
+  //   } catch (e) {
+  //     alert(e.message);
+  //   }
+  // }
+
   useEffect(() => {
     console.log(currentUser);
     if (currentUser.username !== null) {
@@ -30,12 +42,15 @@ export default function Login() {
   return (
     <LargeSquareContainer>
     <FormDiv>
+    <h2>Login</h2>
+
       <form onSubmit={event => handleLogin(event)}>
         <input required type="username"/>
         <input required type="password"/>
         <input type="submit" value="Submit"/>
 
       </form>
+      <h2>Don't have an account? <a href="/register">Register here.</a></h2>
     </FormDiv>
     </LargeSquareContainer>
   )

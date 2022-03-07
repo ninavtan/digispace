@@ -1,5 +1,6 @@
 import axios from "axios";
-import { FETCH_ROOMS, LOGIN_USER, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE } from "./types";
+import res from "express/lib/response";
+import { FETCH_ROOMS, LOGIN_USER, REGISTER_USER, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE } from "./types";
 
 const ROOT_URL = 'http://localhost:3001';
 
@@ -24,8 +25,29 @@ export const loginUser = (username, password) => dispatch => {
     password: password
   })
   .then(function (response) {
-    console.log(response.data);
     dispatch({ type: LOGIN_USER, payload: response.data});
+    
+  })
+  // .then(function(response) {
+  //   dispatch({ type: FETCH_ROOMS, payload: response.data.id});
+
+  // })
+  .catch(function (error) {
+    console.log(error);
+  });
+};
+
+export const registerUser = (email, username, password) => dispatch => {
+  const url = `${ROOT_URL}/register`;
+
+  axios.post(url, {
+    email: email,
+    username: username,
+    password: password
+  })
+  .then(function (response) {
+    console.log(response.data);
+    dispatch({ type: REGISTER_USER, payload: response.data});
   })
   .catch(function (error) {
     console.log(error);

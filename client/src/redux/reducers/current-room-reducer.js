@@ -11,9 +11,8 @@ const DEFAULT_STATE = {
 export default function currentRoomReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case FETCH_CURRENT_ROOM:
-      return {...state, name: action.payload.name, user: action.payload.user, roomSettings: action.payload.roomSettings, authUsers: action.payload.authUsers, gallery: action.payload.gallery };
+      return {...state, name: action.payload.name, user: action.payload.user, roomSettings: action.payload.roomSettings, authUsers: action.payload.authUsers };
     case POST_GALLERY_IMAGE:
-      // return {...state, gallery: action.payload}
       const newState = { ...state };
       newState.gallery.push(action.payload);
       return newState;
@@ -21,8 +20,15 @@ export default function currentRoomReducer(state = DEFAULT_STATE, action) {
 
     case FETCH_GALLERY_IMAGES:
       const galleryState = { ...state };
-      galleryState.gallery.push(action.payload);
-      return galleryState;
+      if (action.payload !== null) {
+        action.payload.map((image) => {
+          return galleryState.gallery.push(image);
+        })
+      } else {
+        console.log(`No images to return!`);
+        return galleryState;
+      }
+     
     default:
       return state;
   }

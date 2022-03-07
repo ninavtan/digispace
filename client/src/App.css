@@ -50,3 +50,18 @@
 .form-select {
   width: 50%;
 }
+
+.register-form {
+  display: block;
+  /* text-align: center; */
+}
+
+.label {
+  padding: 10px;
+  text-align: justify !important;
+}
+
+.submit-button {
+  text-align: center !important;
+  margin: 0 auto;
+}

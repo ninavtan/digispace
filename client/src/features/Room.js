@@ -8,6 +8,7 @@ import RoomHeader from './RoomHeader';
 import styled from 'styled-components';
 
 // import Gallery from './Gallery';
+import Nav from './auth/Nav';
 import Image from './Image';
 import socketIOClient from "socket.io-client";
 
@@ -31,11 +32,12 @@ export default function Room(props) {
 
   }, [params.userId, params.roomId, dispatch]);
 
+
   const currentRoom = useSelector(state => state.currentRoom)
   const currentRoomSettings = useSelector(state => state.currentRoom.roomSettings);
+  console.log(`These are the current room settings: ${JSON.stringify(currentRoomSettings)}`);
 
   const currentGallery = useSelector(state => state.currentRoom.gallery);
-  // console.log(currentGallery)
   // let imgurl = 'data:image/png;base64,' + currentGallery;
 
 
@@ -49,16 +51,13 @@ export default function Room(props) {
   // }, []);
 
   const displayImages = () => {
-    if (currentGallery !== null) {
-    return (
-      <img src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></img>
-      // <Image src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></Image>
-      // currentGallery.map((image) => {
-      //   return (
-      //     <Image src={`data:image/png;base64,${image}`} alt="submitted-drawing"></Image>
-      //   )
-      // })
-    )
+    if (currentGallery.length > 0) {
+      console.log(currentGallery);
+      currentGallery.map((pic) => {
+        return (
+          <img src={`data:image/png;base64,${pic}`} alt="submitted-drawing"></img>
+        )
+      }) 
     } else {
       return (
         <h2>Images coming soon!</h2>
@@ -68,6 +67,7 @@ export default function Room(props) {
 
   return (
     <Container fluid className="room-container">
+      
       <RoomHeader name={currentRoom.name}/>
         <Row xs="auto">
           <Col xs="7"> 
@@ -82,7 +82,13 @@ export default function Room(props) {
       <GalleryContainer>
         <Gallery>  
           <h3>gallery</h3>
-        {displayImages()}
+        
+    
+        {currentGallery.map((pic) => {
+          return (
+            <img alt="user-submitted" src={`data:image/png;base64,${pic}`}></img>
+          )
+        })}
         </Gallery>  
       </GalleryContainer>  
       </Col>
