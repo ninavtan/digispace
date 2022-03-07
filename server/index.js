@@ -8,9 +8,8 @@ const authRoutes = require("./routes/auth");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
-const multer  = require('multer');
-const {GridFsStorage} = require('multer-gridfs-storage');
-const url = "mongodb://localhost/finalproject";
+const passport = require("passport");
+const jwt = require("jwt-simple");
 
 var router = express.Router();
 
