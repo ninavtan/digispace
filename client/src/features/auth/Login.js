@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from "../../redux/actions";
+import styled from 'styled-components';
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,13 +28,32 @@ export default function Login() {
   })
   
   return (
-    <div>
+    <LargeSquareContainer>
+    <FormDiv>
       <form onSubmit={event => handleLogin(event)}>
         <input required type="username"/>
         <input required type="password"/>
         <input type="submit" value="Submit"/>
 
       </form>
-      </div>
+    </FormDiv>
+    </LargeSquareContainer>
   )
 }
+
+const FormDiv = styled.div`
+  // text-align: center;
+  margin-top: 20%;
+  padding: 20%;
+
+`
+
+const LargeSquareContainer = styled.div`
+  height: 500px;
+  width: 500px;
+  background-color: #DAEDBD;
+ margin: 2em auto;
+ z-index: 3;
+
+`
+

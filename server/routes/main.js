@@ -52,7 +52,8 @@ router.get("/create-new-data", (req, res, next) => {
     name: `nina's fantasy world`,
     user: null,
     roomSettings: null,
-    authUsers: []
+    authUsers: [],
+    gallery: []
   });
 
   let settingsOne = new Settings({

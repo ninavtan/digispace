@@ -6,6 +6,9 @@ import { POST_GALLERY_IMAGE } from '../redux/actions/types';
 import { useSelector, useDispatch } from 'react-redux';
 import { postGalleryImage } from '../redux/actions';
 import Gallery from './Gallery';
+import styled from 'styled-components';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 const Canvas = (props) => {
@@ -32,23 +35,32 @@ const Canvas = (props) => {
     console.log('~saved');
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
-    dispatch(postGalleryImage(props.roomId, base64image));
     console.log(base64image);
+    dispatch(postGalleryImage(props.roomId, props.userId, base64image));
   
   }
 
 
   return (
     <div className="canvas-container">
-      <select value={tool} onChange={handleChangeTool}>
+      <DrawingSettingsContainer>
+        <Form.Select value={tool} onChange={handleChangeTool} className="form-select">
         <option value="felt-tip">Felt-Tip</option>
         <option value="brush">Brush</option>
         <option value="pencil">Pencil</option>
         <option value="eraser">Eraser</option>
-      </select>      
+        </Form.Select>
+      {/* <select value={tool} onChange={handleChangeTool}>
+        <option value="felt-tip">Felt-Tip</option>
+        <option value="brush">Brush</option>
+        <option value="pencil">Pencil</option>
+        <option value="eraser">Eraser</option>
+      </select>       */}
 
       <input type="color" value={color} onChange={handleChangeColor} />
-      <button onClick={handleSaveClick}>Save</button>
+      <Button onClick={handleSaveClick} variant="outline-success">Save</Button>
+      </DrawingSettingsContainer>
+
       
     <Stage width={500} height={500} ref={drawingRef} className="konva-stage">
       <Layer>
@@ -73,12 +85,6 @@ const Canvas = (props) => {
         />
         </Layer>
     </Stage>
-
-    {/* <img alt="hey" src={image[0]}></img> */}
-    {/* Add Gallery */}
-
-    <Gallery images={images}/>
-
     </div>
 
     
@@ -86,3 +92,10 @@ const Canvas = (props) => {
 };
 
 export default Canvas;
+
+const DrawingSettingsContainer = styled.div`
+//  margin-top: 2em;
+//  padding-top: 2em;
+ text-align: center;
+
+`

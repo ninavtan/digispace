@@ -45,33 +45,23 @@ export const fetchCurrentRoom = (userId, roomId) => dispatch => {
 
 }
 
-export const fetchGalleryImages = (roomId) => dispatch => {
-  const url = `${ROOT_URL}/room/${roomId}/gallery`;
+export const fetchGalleryImages = (roomId, userId) => dispatch => {
+  const url = `${ROOT_URL}/user/${userId}/room/${roomId}/gallery`;
   axios.get(url)
     .then((response) => {
       dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
+      // console.log(response);
     })
     .catch((err) => {
       console.log(err);
     })
 };
 
-// export const postGalleryImage = (roomId, img) => dispatch => {
-//   const url = `${ROOT_URL}/room/${roomId}/gallery`;
+export const postGalleryImage = (roomId, userId, image) => dispatch => {
+  const url = `${ROOT_URL}/user/${userId}/room/${roomId}/gallery`
   
-//   axios.post(url, img)
-//     .then((response) => {
-//       dispatch({ type: POST_GALLERY_IMAGE, payload: response.data });
-//     })
-//     .catch((err) => {
-//       console.log(`There was a problem posting that gallery image`, err);
-//     });
-// };
 
-export const postGalleryImage = (roomId, img) => dispatch => {
-  const url = `${ROOT_URL}/upload`
-  
-  axios.post(url, img)
+  axios.post(url, image)
     .then((response) => {
       console.log(`This is the response: ${response}`);
     })

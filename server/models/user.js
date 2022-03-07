@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const Room = require("../models/room");
+const Image = require("../models/image");
 
 const UserSchema = new Schema({
     username: {
@@ -15,7 +16,8 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    rooms: [{ type: Schema.Types.ObjectId, ref: "Room" }]
+    rooms: [{ type: Schema.Types.ObjectId, ref: "Room" }],
+    gallery: [{ type: Schema.Types.ObjectId, ref: "Image"}]
     
 }, {timestamps: true});
 

@@ -20,7 +20,9 @@ export default function currentRoomReducer(state = DEFAULT_STATE, action) {
 
 
     case FETCH_GALLERY_IMAGES:
-      return {...state, gallery: action.payload }
+      const galleryState = { ...state };
+      galleryState.gallery.push(action.payload);
+      return galleryState;
     default:
       return state;
   }

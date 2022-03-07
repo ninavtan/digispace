@@ -9,6 +9,7 @@ const cookie = require('cookie');
 const Room = require("../models/room.js");
 const Settings = require("../models/settings.js");
 const User = require("../models/user");
+const Image = require("../models/image");
 
 
 router.get('/', function(req, res) {
@@ -30,8 +31,12 @@ router.post("/register", async (req, res) => {
       user.password = hash;
       const dbUser = new User({
         username: user.username.toLowerCase(),
+        first_name: '',
+        last_name: '',
         email: user.email.toLowerCase(),
         password: user.password,
+        rooms: [],
+        gallery: []
       });
       dbUser.save()
       console.log(user.password);
@@ -157,13 +162,8 @@ router.get("/user/:user/rooms", (req, res, next) => {
         if (err) return next(err);
         targetUserRooms.push(targetUser.rooms);
         res.send(targetUserRooms);
-        // res.send(targetUser.rooms);
     });
 });
-
-// user: 620d7a6b681a861b0f6375d9
-// room: 620d7b11ce808e7630c9654f
-// settings: 620d7b11ce808e7630c96550
 
 // Fetches a specific room
 // TODO: Checks if the user has authorization to enter the room
@@ -229,28 +229,76 @@ router.get("/room/:roomId/gallery", (req, res, next) => {
   })
 });
 
-router.post("/room/:roomId/gallery", (req, res, next) => {
-  const roomId = req.params.roomId;
-  Room.findOneAndUpdate({ _id: '6213bb6edaa5203eb33f579b' })
-  .exec((err, targetRoom) => {
-      if (err) return next(err);
-      // console.log(req.body);
-      targetRoom.gallery.push(req.body);
-      targetRoom.save();
-      res.send(targetRoom.gallery);
+router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
+  // Turns req.body into a string
+  const string = JSON.stringify(req.body);
+  // Replaces white spaces with +
+  const image = string.replace(/\s/g, "+");
+  // Gets rid of the "" we don't need
+  const imageSplit = (image.split('"')[1]);
+  // This renders the base64 image successfully.
+  console.log(imageSplit);
+  // This gets rid of the data:image/png;base64,
+  var base64result = imageSplit.split(',')[1];
+
+  const buffer = Buffer.from(base64result, 'base64');
+
+  let newImage = new Image({
+    name: req.body.name,
+    desc: req.body.desc,
+    user: req.params.userId,
+    room: req.params.roomId,
+    img: {
+      data: buffer,
+      contentType: 'image/png'
+    }
+  
   });
+  newImage.save();
+  
+  let targetUser = User.findOne({ _id: req.params.userId }).then(function(user){
+    console.log(user);
+    user.gallery.push(newImage._id);
+    user.save();
+  });
+
+  let targetRoom = Room.findOne({ _id: req.params.roomId }).then(function(room){
+    console.log(room);
+    room.gallery.push(newImage._id);
+    room.save();
+  });
+  
 });
 
-// router.post("/upload", (req, res, next) => {
-//   console.log(req.body);
-//   base64Img.img(req.body, '', '1', function(err, filepath) {
-//     if (err) console.log(err);
-//     console.log(filepath);
-//   })
+router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
+
+  let data;
+
+  const query = { room: req.params.roomId };
+  Image.find(query)
+    .exec((err, images) => {
+      // Check to see if there are images in db.
+      if (images.length > 0) {
+      // Hardcode first image for development
+      data = images[1].img.data;
+
+      // Convert binary Buffer back to base64
+      data = Buffer.from(images[1].img.data, 'binary').toString('base64');
+      // data = Buffer.from(images[0].img.data, 'base64');
 
 
-// })
-
-
+      // Response (below) gives an error 413 on client side.
+      // res.send(`<img alt="img" src=${data}></img>`);
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': data.length
+      });
+      res.end(data); 
+      // If there are no images in db, return null
+      } else {
+        res.send('null');
+      }
+    })
+});
 
 module.exports = router;

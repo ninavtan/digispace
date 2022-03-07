@@ -5,7 +5,9 @@ import { fetchCurrentRoom } from '../redux/actions';
 import { fetchGalleryImages } from '../redux/actions';
 import Canvas from './Canvas2';
 import RoomHeader from './RoomHeader';
-import Gallery from './Gallery';
+import styled from 'styled-components';
+
+// import Gallery from './Gallery';
 import Image from './Image';
 import socketIOClient from "socket.io-client";
 
@@ -25,7 +27,7 @@ export default function Room(props) {
 
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.userId, params.roomId))
-    dispatch(fetchGalleryImages(params.roomId));
+    dispatch(fetchGalleryImages(params.roomId, params.userId));
 
   }, [params.userId, params.roomId, dispatch]);
 
@@ -33,25 +35,8 @@ export default function Room(props) {
   const currentRoomSettings = useSelector(state => state.currentRoom.roomSettings);
 
   const currentGallery = useSelector(state => state.currentRoom.gallery);
-
-  const imageUrl =
-  "https://i.picsum.photos/id/566/200/300.jpg?hmac=gDpaVMLNupk7AufUDLFHttohsJ9-C17P7L-QKsVgUQU";
-
-  // const [imgUrl, setImgUrl] = useState();
-
-  // const getImg = async () => {
-  //   const response = currentGallery[0];
-  //   // const imageBlob = await response.blob();
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(response);
-  //   reader.onloadend = () => {
-  //     const base64data = reader.result;
-  //     setImgUrl(base64data);
-  //   };
-  // };
-  // useEffect(() => {
-  //   getImg();
-  // }, []);
+  // console.log(currentGallery)
+  // let imgurl = 'data:image/png;base64,' + currentGallery;
 
 
 //////////////////////////// socket.io (in-progress) ///////////////////////
@@ -63,23 +48,68 @@ export default function Room(props) {
   //   });
   // }, []);
 
+  const displayImages = () => {
+    if (currentGallery !== null) {
+    return (
+      <img src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></img>
+      // <Image src={`data:image/png;base64,${currentGallery}`} alt="submitted-drawing"></Image>
+      // currentGallery.map((image) => {
+      //   return (
+      //     <Image src={`data:image/png;base64,${image}`} alt="submitted-drawing"></Image>
+      //   )
+      // })
+    )
+    } else {
+      return (
+        <h2>Images coming soon!</h2>
+      )
+    }
+  }
+
   return (
     <Container fluid className="room-container">
       <RoomHeader name={currentRoom.name}/>
+        <Row xs="auto">
+          <Col xs="7"> 
+            <CanvasContainer>
+              <h3>Leave a cool drawing for other members of this room :)</h3>
+              <Canvas userId={params.userId} roomId={params.roomId} />
+            </CanvasContainer>
+          </Col>
+       
       
-     <Row xs="auto">
-      <Col xs="8"
->
-        <Canvas />
+      <Col xs="5">
+      <GalleryContainer>
+        <Gallery>  
+          <h3>gallery</h3>
+        {displayImages()}
+        </Gallery>  
+      </GalleryContainer>  
       </Col>
        
-      <Col xs="4">
-        <Gallery gallery={currentGallery} />      
-        <img alt='hi' src='http://localhost:3000/ffa68284-9825-45a7-981c-5cc0a5e70667' />
-
-      </Col>
-     </Row>
+    </Row>
       </Container>
 
   )
 }
+const Gallery = styled.div`
+  height: 500px;
+  width: 500px;
+  background-color: #DAEDBD;
+  margin: 0.5em auto;
+  text-align: center;
+
+`
+
+const CanvasContainer = styled.div`
+  border: 1px solid black;
+  // background-color: #DAEDBD;
+  text-align: center;
+  margin: 0.5em auto;
+
+`
+
+const GalleryContainer = styled.div`
+  background-color: #DAEDBD;
+
+`
