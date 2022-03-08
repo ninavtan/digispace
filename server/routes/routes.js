@@ -26,18 +26,7 @@ const tokenForUser = function (user) {
 passport.use(
   "login",
   new LocalStrategy( (username, password, done) => {
-   
-    // const user = await User.findOne({
-    //   username: username,
-    // });
-
-    // const checkPassword = await user.comparePassword(password);
-    // if (!checkPassword) {
-    //   return done(null, false, {message: 'Incorrect email or password'});
-    // }
-    //   return done(null, { myUser: "user", myID: 1234 }, {message: 'Logged in successfully '});
-    
-
+  
     const authenticated = username == "Nina" && password == "Tan";
     console.log("This logs first");
 
@@ -68,7 +57,7 @@ const requireSignin = passport.authenticate("login", { session: false });
 const requireAuth = passport.authenticate("jwt", { session: false });
 
 
-router.post("/register", async (req, res) => {
+router.post("api/auth/signup", async (req, res) => {
   const user = req.body;
 
   // Check if username or email has been taken by another user
@@ -102,7 +91,7 @@ router.post("/register", async (req, res) => {
 //   res.sendFile(__dirname + "/login.html");
 // });
 
-router.post("/login", requireSignin, (req, res, next) => {
+router.post("/api/auth/signin", requireSignin, (req, res, next) => {
   console.log("Then this logs");
   res.send({
     token: tokenForUser(req.user),});
@@ -126,7 +115,7 @@ router.get("/user/:user/rooms", (req, res, next) => {
     .populate("rooms")
     .exec((err, targetUser) => {
         if (err) return next(err);
-        res.send(targetUser.rooms);
+      res.          UIend(targetUser.rooms);
         // res.send(targetUserRooms);
     });
 });

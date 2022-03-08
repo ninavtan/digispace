@@ -11,28 +11,16 @@ export default function Home(props){
   let dispatch = useDispatch();
   const navigate = useNavigate();
   // fetch the user info using useSelector
-  const currentUser = useSelector(state => state.user);
-  const rooms = useSelector(state => state.rooms);
-  
-  const token = useSelector(state => state.user.token);
-  console.log(token)
-
-  useEffect(()=> {
-    
-    // dispatch(fetchRooms('620d7a6b681a861b0f6375d9'))
-    // console.log(rooms);
-    console.log(currentUser);
-  }, []);
-
+ 
   return (
     <HomeContainer>
-      <h2>Welcome, {currentUser.username}!</h2>
+      <h2>Welcome, {props.currentUser}!</h2>
       <h2>Current rooms:</h2>
-      <h2>{currentUser.rooms}</h2>
+      {/* <h2>{currentUser.rooms}</h2>
 
       {currentUser.rooms.map(room => (
-        <div><Link key={currentUser.id} to={`/user/${currentUser.id}/rooms/${room}`}>AYY!</Link></div>
-      ))}
+        <div><Link key={currentUser.id} to={`/user/${currentUser.id}/rooms/${room}`}>AYY!</Link></div> */}
+      {/* ))} */}
       
     </HomeContainer>
   )

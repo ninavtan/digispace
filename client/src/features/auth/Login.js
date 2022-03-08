@@ -1,31 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from "../../redux/actions";
 import styled from 'styled-components';
-
+import { AuthContext } from "../../App";
 
 export default function Login() {
   const navigate = useNavigate();
-  const currentUser = useSelector(state => state.user);
+  const authContext = useContext(AuthContext);
+
+  // const currentUser = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
   function handleLogin(e) {
     e.preventDefault()
-
     const form = e.target;
-
-    dispatch(loginUser(form[0].value, form[1].value));
+    authContext.login(form[0].value, form[1].value)
+    // dispatch(loginUser(form[0].value, form[1].value));
   }
 
-  useEffect(() => {
-    console.log(currentUser);
-    if (currentUser.username !== null) {
-      navigate("/home")
-    } else {
-      console.log('Wrong password');
-    }
-  })
+  // useEffect(() => {
+  //   console.log(currentUser);
+  //   if (currentUser.username !== null) {
+  //     navigate("/home")
+  //   } else {
+  //     console.log('Wrong password');
+  //   }
+  // })
   
   return (
     <LargeSquareContainer>

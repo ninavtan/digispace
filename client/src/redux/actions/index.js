@@ -1,7 +1,12 @@
 import axios from "axios";
-import { FETCH_ROOMS, LOGIN_USER, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE } from "./types";
+import { FETCH_ROOMS, LOGIN_SUCCESS, LOGIN_FAIL, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE } from "./types";
+
+// import { AuthService } from "../../services/auth.service";
+
+import { authLogin } from "../../services/auth.service";
 
 const ROOT_URL = 'http://localhost:3001';
+
 
 export const fetchRooms = (userId) => dispatch => {
   const url = `${ROOT_URL}/user/${userId}/rooms`;
@@ -17,19 +22,33 @@ export const fetchRooms = (userId) => dispatch => {
 };
 
 export const loginUser = (username, password) => dispatch => {
-  const url = `${ROOT_URL}/login`;
-
-  axios.post(url, {
-    username: username,
-    password: password
-  })
-  .then(function (response) {
-    console.log(response.data);
-    dispatch({ type: LOGIN_USER, payload: response.data});
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
+  return authLogin(username, password).then(
+    (data) => {
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: { user: data },
+      });
+      return Promise.resolve();
+    },
+    (error) => {
+      // const message =
+      //   (error.response &&
+      //     error.response.data &&
+      //     error.response.data.message) ||
+      //   error.message ||
+      //   error.toString();
+      dispatch({
+        type: LOGIN_FAIL,
+      });
+      console.log(error);
+      // dispatch({
+      //   type: SET_MESSAGE,
+      //   payload: message,
+      // });
+      return Promise.reject();
+    }
+  );
+ 
 };
 
 export const fetchCurrentRoom = (userId, roomId) => dispatch => {
