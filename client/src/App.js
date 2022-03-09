@@ -19,8 +19,10 @@ import ProtectedRoute from './features/ProtectedRoute';
 
 // Where do I set AuthContext?
 export const AuthContext = React.createContext({
-  isAuth: false,
-  token: null,
+  auth: false,
+  setAuth: () => {},
+  userInfo: {},
+  setUserInfo: () => {}
 });
 
 const ENDPOINT = "http://127.0.0.1:3001";
@@ -31,12 +33,16 @@ function App() {
 
   const dispatch = useDispatch();
 
+  const [auth, setAuth] = useState('false');
+  const [userInfo, setUserInfo] = useState(null);
+  const value = { auth, setAuth, userInfo, setUserInfo }
+
   // This is working!
   const login = (username, password) => { 
     return dispatch(loginUser(username, password)) 
-    .then(() => {
+    .then((user) => {
       console.log('HEY!!');
-      setIsAuth(true);
+      // setIsAuth(true);
     })
   };
 
@@ -45,7 +51,7 @@ function App() {
 
   const navigate = useNavigate();
 
-  const [isAuth, setIsAuth] = useState(false);
+  // const [isAuth, setIsAuth] = useState(false);
 
   const [response, setResponse] = useState("");
 
@@ -59,11 +65,9 @@ function App() {
   //   });
   // }, []);
 
+  // should App have the Login?
   return (
-    <AuthContext.Provider value={{
-      isAuth: isAuth,
-      login: login
-    }}>
+    <AuthContext.Provider value={value}>
       <Routes>
         <Route exact path="/login" element={<Login/>} />
         
@@ -71,9 +75,9 @@ function App() {
           <Route exact path="/home" element={<Home/>} />
         </Route>
 
-        <Route exact path="user/:userId/rooms/:roomId" element={<ProtectedRoute/>}>
-          <Route path="user/:userId/rooms/:roomId" element={<Room/>} />
-        </Route>
+        {/* <Route exact path="user/:userId/room/:roomId" element={<ProtectedRoute/>}> */}
+          <Route path="user/:userId/room/:roomId" element={<Room/>} />
+        {/* </Route> */}
       </Routes>
     </AuthContext.Provider>
     

@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL } from "../actions/types";
+import { LOGIN_SUCCESS, FETCH_USER_INFO, LOGIN_FAIL } from "../actions/types";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -14,6 +14,8 @@ const initialState = user
         isLoggedIn: true,
         user: action.payload.user,
       }
+      case FETCH_USER_INFO:
+      return state
       default: {
         return state;
       }

@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const http = require('http');
 const authRoutes = require("./routes/routes.js");
+const dataRoutes = require("./routes/main");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
@@ -72,8 +73,8 @@ const port = process.env.PORT || 3001;
 // );
 app.use(express.json({limit: '25mb'}));
 app.use(express.urlencoded({limit: '25mb', extended: true}));
-// app.use(mainRoutes);
-app.use(authRoutes);
+app.use(dataRoutes);
+app.use('/', authRoutes);
 
 
 app.get("/api", (req, res) => {

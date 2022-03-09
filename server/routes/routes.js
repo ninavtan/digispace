@@ -5,12 +5,15 @@ const jwt = require("jwt-simple");
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
+const bcrypt = require("bcrypt");
+
 
 // Models
 const Room = require("../models/room.js");
 const Settings = require("../models/settings.js");
 const User = require("../models/user");
 const Image = require("../models/image");
+const user = require("../models/user");
 
 const tokenForUser = function (user) {
   return jwt.encode(
@@ -26,17 +29,33 @@ const tokenForUser = function (user) {
 passport.use(
   "login",
   new LocalStrategy( (username, password, done) => {
-  
-    const authenticated = username == "Nina" && password == "Tan";
-    console.log("This logs first");
+    console.log('This logs first');
 
-    if (authenticated) {
-      console.log("right password!");
-      return done(null, { myUser: "user", myID: 1234 });
-    } else {
-      console.log('wrong password')
-      return done(null, false);
+    let authenticated;
+  
+    User.findOne({ username: username }, ((err, foundUser) => {
+      if (!foundUser) {
+        console.log('no user found');
+      } else {
+      console.log(foundUser);
+      bcrypt.compare(password, foundUser.password, function(err, isCorrect) {
+        if (err) throw err;
+        if (isCorrect) {
+          authenticated = true;
+          console.log('password decrypting is correct!');
+        } else {
+          !authenticated;
+        }
+        if (authenticated) {
+          console.log("right password!");
+          return done(null, { user: foundUser });
+        } else {
+          console.log('wrong password')
+          return done(null, false);
+        }
+      })
     }
+  }));
   })
 );
 
@@ -57,7 +76,7 @@ const requireSignin = passport.authenticate("login", { session: false });
 const requireAuth = passport.authenticate("jwt", { session: false });
 
 
-router.post("api/auth/signup", async (req, res) => {
+router.post("/register", async (req, res) => {
   const user = req.body;
 
   // Check if username or email has been taken by another user
@@ -94,7 +113,10 @@ router.post("api/auth/signup", async (req, res) => {
 router.post("/api/auth/signin", requireSignin, (req, res, next) => {
   console.log("Then this logs");
   res.send({
-    token: tokenForUser(req.user),});
+    token: tokenForUser(req.user),
+    userInfo: req.user.user
+    
+  });
 });
 
 router.get("/protected", requireAuth, function (req, res) {
@@ -106,7 +128,7 @@ router.get("/protected", requireAuth, function (req, res) {
 // END OF AUTH ROUTES //
 
 // Get all the :user's rooms
-router.get("/user/:user/rooms", (req, res, next) => {
+router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
   const userId = req.params.user;
 
   let targetUserRooms = [];
@@ -115,43 +137,46 @@ router.get("/user/:user/rooms", (req, res, next) => {
     .populate("rooms")
     .exec((err, targetUser) => {
         if (err) return next(err);
-      res.          UIend(targetUser.rooms);
-        // res.send(targetUserRooms);
+        res.send(targetUser.rooms);
     });
 });
 
 // Fetches a specific room
 // TODO: Checks if the user has authorization to enter the room
 // Needs to work on the backend
-router.get("/user/:userId/room/:roomId", (req, res, next) => {
+router.get("/user/:userId/room/:roomId", requireAuth, (req, res, next) => {
   const userId = req.params.userId;
 
   let authUsersList = [];
   let targetRoomSettings;
 
-  Room.findById(req.params.roomId)
-  .populate("roomSettings")
-  .exec((err, roomSettings) => {
-    console.log(roomSettings);
-    targetRoomSettings = roomSettings
-  })
+  // Room.findById(req.params.roomId)
+  // .populate("roomSettings")
+  // .exec((err, roomSettings) => {
+  //   console.log(roomSettings);
+  //   targetRoomSettings = roomSettings
+  // })
 
-  Room.findById( req.params.roomId )
-    .populate("authUsers")
-    .exec((err, room) => {
-      if (err) throw err;
-      // check if userId is in authUsersList which is in Room
-      authUsersList = room.authUsers;
-      console.log('This is the authUserList', authUsersList);
-      // if authUserList contains userId, allow the user to enter
-      authUsersList.map((p) => {
-        if (p._id == userId) {
-          res.status(200).send(targetRoomSettings);
-        } else {
-          res.status(401).send('You are unauthorized to view this room.');
-        }
-      });
-    })
+  // Room.findById( req.params.roomId )
+  //   .populate("authUsers")
+  //   .exec((err, room) => {
+  //     if (err) throw err;
+  //     // check if userId is in authUsersList which is in Room
+  //     authUsersList = room.authUsers;
+  //     console.log('This is the authUserList', authUsersList);
+  //     // if authUserList contains userId, allow the user to enter
+  //     authUsersList.map((p) => {
+  //       if (p._id == userId) {
+  //         res.status(200).send(targetRoomSettings);
+  //       } else {
+  //         res.status(401).send('You are unauthorized to view this room.');
+  //       }
+  //     });
+  //   })
+
+  Room.findOne({ _id: req.params.roomId}, (err, result) => {
+    res.send(result);
+  })
 });
 
 // Create a new room
@@ -241,9 +266,9 @@ router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
       // Loop through images
 
       data = images.map((image) => {
-        return Buffer.from(image.img.data, 'binary').toString('base64');
+        return Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, "");
       });
-
+      // const finalImages = data.replace(/'/g, "");
       // Convert binary Buffer back to base64
       // data = Buffer.from(images[1].img.data, 'binary').toString('base64');
 

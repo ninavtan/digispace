@@ -4,7 +4,7 @@ import PaintingArea from './PaintingArea';
 import RedoPaintingArea from './RedoPaintingArea';
 import { POST_GALLERY_IMAGE } from '../redux/actions/types';
 import { useSelector, useDispatch } from 'react-redux';
-import { postGalleryImage } from '../redux/actions';
+import { fetchGalleryImages, postGalleryImage } from '../redux/actions';
 import Gallery from './Gallery';
 import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
@@ -12,7 +12,6 @@ import Form from 'react-bootstrap/Form';
 
 
 const Canvas = (props) => {
-  console.log(props);
   const dispatch = useDispatch();
 
   const [tool, setTool] = useState('brush');
@@ -35,8 +34,9 @@ const Canvas = (props) => {
     console.log('~saved');
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
-    console.log(base64image);
-    dispatch(postGalleryImage(props.roomId, props.userId, base64image));
+    dispatch(postGalleryImage(props.roomId, props.userId, base64image))
+    dispatch(fetchGalleryImages(props.roomId, props.userId, props.token))
+    
   
   }
 

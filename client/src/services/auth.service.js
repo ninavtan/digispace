@@ -17,6 +17,7 @@ const AUTH_URL = 'http://localhost:3001/api/auth/'
         password,
       })
       .then((response) => {
+        console.log(response);
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
         }

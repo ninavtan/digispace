@@ -31,12 +31,6 @@ export const loginUser = (username, password) => dispatch => {
       return Promise.resolve();
     },
     (error) => {
-      // const message =
-      //   (error.response &&
-      //     error.response.data &&
-      //     error.response.data.message) ||
-      //   error.message ||
-      //   error.toString();
       dispatch({
         type: LOGIN_FAIL,
       });
@@ -51,11 +45,12 @@ export const loginUser = (username, password) => dispatch => {
  
 };
 
-export const fetchCurrentRoom = (userId, roomId) => dispatch => {
+export const fetchCurrentRoom = (userId, roomId, token) => dispatch => {
   const url = `${ROOT_URL}/user/${userId}/room/${roomId}`;
 
-  axios.get(url)
+  axios.get(url, {headers: {"Authorization": `Bearer ${token}`}})
   .then((response) => {
+    console.log(response);
     dispatch({ type: FETCH_CURRENT_ROOM, payload: response.data })
   })
   .catch((err) => {
@@ -64,9 +59,9 @@ export const fetchCurrentRoom = (userId, roomId) => dispatch => {
 
 }
 
-export const fetchGalleryImages = (roomId, userId) => dispatch => {
+export const fetchGalleryImages = (roomId, userId, token) => dispatch => {
   const url = `${ROOT_URL}/user/${userId}/room/${roomId}/gallery`;
-  axios.get(url)
+  axios.get(url, {headers: {"Authorization": `Bearer ${token}`}})
     .then((response) => {
       dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
       // console.log(response);
@@ -83,6 +78,7 @@ export const postGalleryImage = (roomId, userId, image) => dispatch => {
   axios.post(url, image)
     .then((response) => {
       console.log(`This is the response: ${response}`);
+      dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
     })
     .catch((err) => {
       console.log(`There was a problem posting that gallery image`, err);

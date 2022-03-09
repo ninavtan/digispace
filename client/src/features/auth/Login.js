@@ -9,15 +9,26 @@ export default function Login() {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
+  const { auth, setAuth } = useContext(AuthContext);
+
+
   // const currentUser = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
   function handleLogin(e) {
     e.preventDefault()
     const form = e.target;
-    authContext.login(form[0].value, form[1].value)
+    
+    dispatch(loginUser(form[0].value, form[1].value))
+      .then((err, result) => {
+        if (err) console.log(err)
+        setAuth(true);
+        navigate("/home");
+      })
+   
     // dispatch(loginUser(form[0].value, form[1].value));
   }
+
 
   // useEffect(() => {
   //   console.log(currentUser);

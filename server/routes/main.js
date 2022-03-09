@@ -15,28 +15,6 @@ router.get("/nina", (req, res, next) => {
   res.json({message: "HI NINA~"});
 });
 
-function verifyJWT(req, res, next) {
-  console.log(req.headers);
-  const token = req.headers["authorization"]?.split(' ')[1];
-  console.log('Verify JWT: ', token);
-  if (token) {
-    console.log('This is the token in question: ', token);
-    jwt.verify(token, "process.env.JWT_SECRET", (err, decoded) => {
-      if (err) return res.json({
-        err: err,
-        isLoggedIn: false,
-        message: "Failed to authenticate"
-      })
-      req.user = {};
-      req.user.id = decoded.id
-      req.user.username = decoded.username
-      next()
-    })
-  } else {
-    res.json({message: "incorrect token given", isLoggedIn: false})
-  }
-};
-
 // Create new fake data
 router.get("/create-new-data", (req, res, next) => {
 
@@ -82,7 +60,7 @@ router.get("/create-new-data", (req, res, next) => {
 
 // Push fake database objects to their respective arrays
 router.get("/push-new-data", async (req, res, next) => {
-  userOne = await User.findOne({ username: 'nina777' }).exec();
+  userOne = await User.findOne({ username: 'nina' }).exec();
   roomOne = await Room.findOne({ username: `nina's fantasy world 2` }).exec();
   settingsOne = await Settings.findOne({ name: 'fantasy world settings' }).exec();
 
