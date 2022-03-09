@@ -3,15 +3,13 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const http = require('http');
-const mainRoutes = require('./routes/main');
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/routes.js");
+const dataRoutes = require("./routes/main");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
-const multer  = require('multer');
-const {GridFsStorage} = require('multer-gridfs-storage');
-const url = "mongodb://localhost/finalproject";
-
+const passport = require("passport");
+const jwt = require("jwt-simple");
 var router = express.Router();
 
 mongoose.connect("mongodb://localhost/finalproject", {
@@ -25,9 +23,7 @@ app.use(cors({
 app.use(express.static('./server/public'));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-const storage = new GridFsStorage({ url });
-
-const upload = multer({ storage })
+app.use(passport.initialize());
 
 
 const server = http.createServer(app);
@@ -77,7 +73,7 @@ const port = process.env.PORT || 3001;
 // );
 app.use(express.json({limit: '25mb'}));
 app.use(express.urlencoded({limit: '25mb', extended: true}));
-app.use(mainRoutes);
+app.use(dataRoutes);
 app.use('/', authRoutes);
 
 
