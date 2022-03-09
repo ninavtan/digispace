@@ -8,7 +8,7 @@ const Room = require("../models/room");
 const ImageSchema = new Schema({
     name: String,
     desc: String,
-    user: { type: Schema.Types.ObjectId, ref: "User" },
+    user: String,
     room: { type: Schema.Types.ObjectId, ref: "Room" },
     img: 
     {

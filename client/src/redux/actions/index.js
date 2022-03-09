@@ -42,13 +42,12 @@ export const loginUser = (username, password) => dispatch => {
       return Promise.reject();
     }
   );
- 
 };
 
-export const fetchCurrentRoom = (userId, roomId, token) => dispatch => {
-  const url = `${ROOT_URL}/user/${userId}/room/${roomId}`;
+export const fetchCurrentRoom = (roomId, token) => dispatch => {
+  const url = `${ROOT_URL}/room/${roomId}`;
 
-  axios.get(url, {headers: {"Authorization": `Bearer ${token}`}})
+  axios.get(url)
   .then((response) => {
     console.log(response);
     dispatch({ type: FETCH_CURRENT_ROOM, payload: response.data })
@@ -59,9 +58,9 @@ export const fetchCurrentRoom = (userId, roomId, token) => dispatch => {
 
 }
 
-export const fetchGalleryImages = (roomId, userId, token) => dispatch => {
-  const url = `${ROOT_URL}/user/${userId}/room/${roomId}/gallery`;
-  axios.get(url, {headers: {"Authorization": `Bearer ${token}`}})
+export const fetchGalleryImages = (roomId, userId) => dispatch => {
+  const url = `${ROOT_URL}/room/${roomId}/gallery`;
+  axios.get(url)
     .then((response) => {
       dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
       // console.log(response);
@@ -71,13 +70,14 @@ export const fetchGalleryImages = (roomId, userId, token) => dispatch => {
     })
 };
 
-export const postGalleryImage = (roomId, userId, image) => dispatch => {
-  const url = `${ROOT_URL}/user/${userId}/room/${roomId}/gallery`
+export const postGalleryImage = (roomId, image, guestName) => dispatch => {
+  const url = `${ROOT_URL}/room/${roomId}/gallery`
   
+  const imageToSend = {image: image, artist: guestName }
 
-  axios.post(url, image)
+  axios.post(url, imageToSend)
     .then((response) => {
-      console.log(`This is the response: ${response}`);
+      console.log(`This is the response: ${response.data}`);
       dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
     })
     .catch((err) => {

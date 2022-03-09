@@ -69,14 +69,15 @@ function App() {
   return (
     <AuthContext.Provider value={value}>
       <Routes>
+        <Route exact path="/" element={<Home/>} />
+        <Route exact path="/home" element={<Home/>} />
         <Route exact path="/login" element={<Login/>} />
-        
-        <Route exact path="/home" element={<ProtectedRoute/>}>
-          <Route exact path="/home" element={<Home/>} />
-        </Route>
+
 
         {/* <Route exact path="user/:userId/room/:roomId" element={<ProtectedRoute/>}> */}
-          <Route path="user/:userId/room/:roomId" element={<Room/>} />
+          <Route path="/room" element={<Room/>}>
+            <Route path=":roomId" element={<Room />} />
+          </Route>
         {/* </Route> */}
       </Routes>
     </AuthContext.Provider>

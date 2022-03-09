@@ -5,7 +5,7 @@ const DEFAULT_STATE = {
   user: null,
   roomSettings: null,
   authUsers: null,
-  gallery: []
+  gallery: new Set(),
 }
 
 export default function currentRoomReducer(state = DEFAULT_STATE, action) {
@@ -16,18 +16,17 @@ export default function currentRoomReducer(state = DEFAULT_STATE, action) {
 
     case POST_GALLERY_IMAGE:
       // return {...state, gallery: action.payload}
+      console.log(`This is the response when posting an image: ${action.payload.image}`)
       const newState = { ...state };
-      newState.gallery.push(action.payload);
+      newState.gallery.add(action.payload.image);
       return newState;
 
 
     case FETCH_GALLERY_IMAGES:
-      // Create new array with no repeating values
-
+      
       const galleryState = { ...state };
-      galleryState.gallery.push(action.payload);
-      // return uniqueGallery;
-
+      galleryState.gallery.add(action.payload);
+      console.log(galleryState);
       return galleryState;
     default:
       return state;

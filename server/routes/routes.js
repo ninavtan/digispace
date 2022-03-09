@@ -144,39 +144,23 @@ router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
 // Fetches a specific room
 // TODO: Checks if the user has authorization to enter the room
 // Needs to work on the backend
-router.get("/user/:userId/room/:roomId", requireAuth, (req, res, next) => {
-  const userId = req.params.userId;
+router.get("/room/:roomId", (req, res, next) => {
 
-  let authUsersList = [];
-  let targetRoomSettings;
+  // let targetRoomSettings;
 
-  // Room.findById(req.params.roomId)
-  // .populate("roomSettings")
-  // .exec((err, roomSettings) => {
-  //   console.log(roomSettings);
-  //   targetRoomSettings = roomSettings
+  Room.findById(req.params.roomId)
+  .populate("roomSettings")
+  .exec((err, roomSettings) => {
+    console.log(roomSettings);
+    res.send(roomSettings);
+    // targetRoomSettings = roomSettings;
+  });
+
+  // res.send(targetRoomSettings);
+
+  // Room.findOne({ _id: req.params.roomId}, (err, result) => {
+  //   res.send(result);
   // })
-
-  // Room.findById( req.params.roomId )
-  //   .populate("authUsers")
-  //   .exec((err, room) => {
-  //     if (err) throw err;
-  //     // check if userId is in authUsersList which is in Room
-  //     authUsersList = room.authUsers;
-  //     console.log('This is the authUserList', authUsersList);
-  //     // if authUserList contains userId, allow the user to enter
-  //     authUsersList.map((p) => {
-  //       if (p._id == userId) {
-  //         res.status(200).send(targetRoomSettings);
-  //       } else {
-  //         res.status(401).send('You are unauthorized to view this room.');
-  //       }
-  //     });
-  //   })
-
-  Room.findOne({ _id: req.params.roomId}, (err, result) => {
-    res.send(result);
-  })
 });
 
 // Create a new room
@@ -199,19 +183,22 @@ router.put("/user/:userId/room/:roomId", (req, res, next) => {
   console.log(req.body);
 });
 
-router.get("/room/:roomId/gallery", (req, res, next) => {
-  const roomId = req.params.roomId;
-  Room.findById( roomId )
-  .exec((err, targetRoom) => {
-      if (err) return next(err);
-      console.log(targetRoom.gallery);
-      res.send(targetRoom.gallery);
-  })
-});
+// router.get("/room/:roomId/gallery", (req, res, next) => {
+//   const roomId = req.params.roomId;
+//   Image.find({ room: roomId}, (err, result) => {
+//     res.send(result);
+//   })
+//   // Room.findById( roomId )
+//   // .exec((err, targetRoom) => {
+//   //     if (err) return next(err);
+//   //     console.log(targetRoom.gallery);
+//   //     res.send(targetRoom.gallery);
+//   // })
+// });
 
-router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
+router.post("/room/:roomId/gallery", async (req, res, next) => {
   // Turns req.body into a string
-  const string = JSON.stringify(req.body);
+  const string = JSON.stringify(req.body.image);
   // Replaces white spaces with +
   const image = string.replace(/\s/g, "+");
   // Gets rid of the "" we don't need
@@ -223,10 +210,11 @@ router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
 
   const buffer = Buffer.from(base64result, 'base64');
 
+
   let newImage = new Image({
     name: req.body.name,
     desc: req.body.desc,
-    user: req.params.userId,
+    user: req.body.artist,
     room: req.params.roomId,
     img: {
       data: buffer,
@@ -236,21 +224,23 @@ router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
   });
   newImage.save();
   
-  let targetUser = User.findOne({ _id: req.params.userId }).then(function(user){
-    console.log(user);
-    user.gallery.push(newImage._id);
-    user.save();
-  });
+  // let targetUser = User.findOne({ _id: req.params.userId }).then(function(user){
+  //   console.log(user);
+  //   user.gallery.push(newImage._id);
+  //   user.save();
+  // });
 
   let targetRoom = Room.findOne({ _id: req.params.roomId }).then(function(room){
     console.log(room);
     room.gallery.push(newImage._id);
     room.save();
   });
+  console.log(newImage);
+  res.send(newImage);
   
 });
 
-router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
+router.get("/room/:roomId/gallery", (req, res, next) => {
 
   let data = [];
 
