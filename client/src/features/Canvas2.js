@@ -1,4 +1,5 @@
 import React, {useState, useRef} from 'react';
+import Konva from 'konva';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 import PaintingArea from './PaintingArea';
 import RedoPaintingArea from './RedoPaintingArea';
@@ -16,6 +17,7 @@ const Canvas = (props) => {
 
   const [tool, setTool] = useState('brush');
   const [color, setColor] = useState('#e66465');
+  const [erase, setErase] = useState(false);
   const [images, setImages] = useState([]);
 
   
@@ -47,7 +49,7 @@ const Canvas = (props) => {
 
   return (
     <div className="canvas-container">
-      <DrawingSettingsContainer>
+      <DrawingSettingsContainer id="drawing-settings">
         <Form.Select value={tool} onChange={handleChangeTool} className="form-select">
         <option value="felt-tip">Felt-Tip</option>
         <option value="brush">Brush</option>
@@ -79,6 +81,7 @@ const Canvas = (props) => {
           height={400}
           tool={tool}
           color={color}
+          erase={erase}
           
         />
         </Layer>

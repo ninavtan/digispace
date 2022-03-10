@@ -28,26 +28,34 @@ export default function Room(props) {
   // get local storage 'bearer'
   let token = localStorage.getItem('Bearer');
   
-  useEffect(() => {
-    dispatch(fetchGalleryImages(params.roomId));
-  });
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    dispatch(fetchGalleryImages(params.roomId))
+  }, []);
+
+  
   const currentGallery = useSelector(state => state.currentRoom.gallery);
   console.log(currentGallery);
+  // Above logs
 
   let galleryArray = [];
-  for (let [key, value] of currentGallery.entries()) galleryArray.push(value);
+  for (let [key, value] of currentGallery.values()) galleryArray.push(value);
+  galleryArray.push(currentGallery.values());
   console.log(galleryArray);
-  
+  // setData(galleryArray)
+  // This doesn't load until page has already been there and is reloaded...
+
 
   const displayImages = () => {
     if (galleryArray == 'undefined' || galleryArray.length == 0) {
+      console.log('no images');
       return (
         <h2>Images coming soon...</h2>
       )
     } else {
       return (
-        galleryArray[0].map((image) => {
+        galleryArray.map((image) => {
           return (
             <img id="gallery-image" src={`data:image/png;base64,${image}`} alt="submitted-drawing"></img>
           )
