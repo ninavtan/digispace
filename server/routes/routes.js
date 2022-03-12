@@ -127,6 +127,16 @@ router.get("/protected", requireAuth, function (req, res) {
 
 // END OF AUTH ROUTES //
 
+// Get all of the rooms
+router.get("/rooms", (req, res, next) => {
+  let rooms = [];
+  Room.find({}, (err, response) => {
+    if (err) console.log(`Error with fetching all rooms ${err}`);
+    // console.log(response);
+    res.send(response);
+  })
+})
+
 // Get all the :user's rooms
 router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
   const userId = req.params.user;
@@ -146,18 +156,35 @@ router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
 // Needs to work on the backend
 router.get("/room/:roomId", (req, res, next) => {
 
-  // let targetRoomSettings;
-
-  Room.findById(req.params.roomId)
-  .populate("roomSettings")
-  .exec((err, roomSettings) => {
-    console.log(roomSettings);
-    res.send(roomSettings);
-    // targetRoomSettings = roomSettings;
+  // Returns the room settings
+  // userCreated and roomId are ObjectIds
+  Room.findOne({ room: req.params.roomId }).
+  populate('roomSettings').
+  exec(function (err, room) {
+    if (err) return (err);
+    // console.log(room);
+    // prints "The author is Ian Fleming"
   });
 
-  // res.send(targetRoomSettings);
+  Image.find({ room: req.params.roomId}).
+  populate('image').
+  exec(function (err, image) {
+    if (err) return (err);
+    console.log('Here is da image', image);
+  })
 
+
+
+  // Settings.findById(targetRoomSettings)
+  // .exec((err, settings) => {
+  //   if (err) console.log('Error while fetching settings', err);
+  //   res.send(settings);
+  // })
+
+  // Image.find({ room: req.params.roomId })
+  // .exec((err, images) => {
+  //   res.send(images);
+  // })
   // Room.findOne({ _id: req.params.roomId}, (err, result) => {
   //   res.send(result);
   // })
@@ -242,33 +269,30 @@ router.post("/room/:roomId/gallery", async (req, res, next) => {
 
 router.get("/room/:roomId/gallery", (req, res, next) => {
 
-  let data = [];
+  let data = {};
+  console.log(req.params.roomId);
 
   const query = { room: req.params.roomId };
   Image.find(query)
     .exec((err, images) => {
+      if (err) throw err;
       // Check to see if there are images in db.
-      if (images.length > 0) {
-      // Hardcode first image for development
+      if (images) {
       console.log(`Images is ${images.length} long!`);
+      // console.log()
       // console.log(`Images is a ${typeof images}!`);
       // object (allegedly)
       // Loop through images
 
-      data = images.map((image) => {
-        return Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, "");
-      });
-      // const finalImages = data.replace(/'/g, "");
-      // Convert binary Buffer back to base64
-      // data = Buffer.from(images[1].img.data, 'binary').toString('base64');
+      
+      data = images.map((image) => (
+        {
+          id: image._id,
+          image: Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, ""),
+        }
 
+      ));
 
-      // Response (below) gives an error 413 on client side.
-      // res.send(`<img alt="img" src=${data}></img>`);
-      // res.writeHead(200, {
-      //   'Content-Type': 'image/png',
-      //   'Content-Length': data.length
-      // });
       res.send(data); 
       // If there are no images in db, return null
       } else {

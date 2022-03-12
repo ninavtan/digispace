@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchRooms } from '../redux/actions';
 import { fetchCurrentRoom } from '../redux/actions';
 import { AuthContext } from "../App";
@@ -16,7 +16,7 @@ const ROOT_URL = 'http://localhost:3001';
 
 export default function Home(){
 
-  let navigate = useNavigate();
+  // let navigate = useNavigate();
 
   let dispatch = useDispatch();
   
@@ -28,7 +28,7 @@ export default function Home(){
    axios.get(`${ROOT_URL}/room/${form[0].value}`)
     .then(res => {
       console.log(res);
-      navigate(`/room/${form[0].value}`)
+      // navigate(`/room/${form[0].value}`)
     })
     .catch(err => {
       console.log(err)
@@ -36,7 +36,7 @@ export default function Home(){
   //  dispatch(fetchCurrentRoom(form[0].value));
    // If the room exists...
    // Navigate the user to it. If not, send a message saying that we don't got it.
-   navigate(``)
+  //  navigate(``)
    
   }
   

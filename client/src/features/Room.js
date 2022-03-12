@@ -21,48 +21,55 @@ const ENDPOINT = "http://127.0.0.1:3001";
 
 
 export default function Room(props) {
+  console.log(props);
 
   const dispatch = useDispatch();
   let params = useParams();
 
-  // get local storage 'bearer'
-  let token = localStorage.getItem('Bearer');
-  
-  const [data, setData] = useState([]);
-
   useEffect(() => {
-    dispatch(fetchGalleryImages(params.roomId))
+    dispatch(fetchCurrentRoom(params.id))
+    dispatch(fetchGalleryImages(params.id))
   }, []);
 
-  
-  const currentGallery = useSelector(state => state.currentRoom.gallery);
-  console.log(currentGallery);
-  // Above logs
 
-  let galleryArray = [];
-  for (let [key, value] of currentGallery.values()) galleryArray.push(value);
-  galleryArray.push(currentGallery.values());
-  console.log(galleryArray);
-  // setData(galleryArray)
-  // This doesn't load until page has already been there and is reloaded...
+  const room = useSelector(({ rooms }) => {
+    return rooms.entries[params.id]
+  });
 
+  const gallery = useSelector(({ gallery }) => {
+    return gallery.images[0];
+  });
+
+  console.log(gallery);
 
   const displayImages = () => {
-    if (galleryArray == 'undefined' || galleryArray.length == 0) {
+    if (gallery == 'undefined' || gallery.length == 0) {
       console.log('no images');
       return (
         <h2>Images coming soon...</h2>
       )
     } else {
+      // return (<h2>images</h2>)
       return (
-        galleryArray.map((image) => {
+        gallery.map((entry) => {
           return (
-            <img id="gallery-image" src={`data:image/png;base64,${image}`} alt="submitted-drawing"></img>
+            <img id="gallery-image" src={`data:image/png;base64,${entry.image}`} alt="submitted-drawing"></img>
           )
-        }))
+        })
+      )
+      
     }
   }
-  
+
+  if (!room) {
+    return <div>Not found</div>;
+  } else {
+    console.log(room);
+  }
+
+
+ 
+
   //////////////////////////// socket.io (in-progress) ///////////////////////
   // const [response, setResponse] = useState("");
   // useEffect(() => {
@@ -74,12 +81,14 @@ export default function Room(props) {
 
   return (
     <Container fluid className="room-container">
-      <RoomHeader name="nina's room"/>
+      <RoomHeader name={room.name}/>
+      <Link to="/">Back To Index</Link>
+
         <Row xs="auto">
           <Col xs="7"> 
             <CanvasContainer>
               <h3>Leave a cool drawing for other members of this room :)</h3>
-              <Canvas userId={params.userId} roomId={params.roomId} token={token} />
+              <Canvas userId={params.userId} roomId={params.roomId} />
             </CanvasContainer>
           </Col>
        
@@ -88,8 +97,7 @@ export default function Room(props) {
       <GalleryContainer>
         <h3>gallery</h3>
         <Gallery>  
-          {(currentGallery ? displayImages() : null)}
-        {/* {displayImages()} */}
+        {displayImages()}
         </Gallery>  
       </GalleryContainer>  
       </Col>

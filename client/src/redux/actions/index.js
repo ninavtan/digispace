@@ -7,19 +7,31 @@ import { authLogin } from "../../services/auth.service";
 
 const ROOT_URL = 'http://localhost:3001';
 
-
-export const fetchRooms = (userId) => dispatch => {
-  const url = `${ROOT_URL}/user/${userId}/rooms`;
+export const fetchRooms = () => dispatch => {
+  const url = `${ROOT_URL}/rooms`;
 
   axios.get(url)
   .then((response) => {
     dispatch({ type: FETCH_ROOMS, payload: response.data })
-    console.log(response.data);
   })
   .catch((err) => {
     console.log(`There was an error with fetching the user's rooms`, err);
   })
 };
+
+
+// export const fetchRooms = (userId) => dispatch => {
+//   const url = `${ROOT_URL}/user/${userId}/rooms`;
+
+//   axios.get(url)
+//   .then((response) => {
+//     dispatch({ type: FETCH_ROOMS, payload: response.data })
+//     console.log(response.data);
+//   })
+//   .catch((err) => {
+//     console.log(`There was an error with fetching the user's rooms`, err);
+//   })
+// };
 
 export const loginUser = (username, password) => dispatch => {
   return authLogin(username, password).then(
@@ -44,7 +56,7 @@ export const loginUser = (username, password) => dispatch => {
   );
 };
 
-export const fetchCurrentRoom = (roomId, token) => dispatch => {
+export const fetchCurrentRoom = (roomId) => dispatch => {
   const url = `${ROOT_URL}/room/${roomId}`;
 
   axios.get(url)
@@ -58,7 +70,7 @@ export const fetchCurrentRoom = (roomId, token) => dispatch => {
 
 }
 
-export const fetchGalleryImages = (roomId, userId) => dispatch => {
+export const fetchGalleryImages = (roomId) => dispatch => {
   const url = `${ROOT_URL}/room/${roomId}/gallery`;
   axios.get(url)
     .then((response) => {
