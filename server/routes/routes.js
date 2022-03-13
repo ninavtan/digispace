@@ -127,6 +127,16 @@ router.get("/protected", requireAuth, function (req, res) {
 
 // END OF AUTH ROUTES //
 
+// Get all of the rooms
+router.get("/rooms", (req, res, next) => {
+  let rooms = [];
+  Room.find({}, (err, response) => {
+    if (err) console.log(`Error with fetching all rooms ${err}`);
+    // console.log(response);
+    res.send(response);
+  })
+})
+
 // Get all the :user's rooms
 router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
   const userId = req.params.user;
@@ -144,39 +154,40 @@ router.get("/user/:user/rooms", requireAuth, (req, res, next) => {
 // Fetches a specific room
 // TODO: Checks if the user has authorization to enter the room
 // Needs to work on the backend
-router.get("/user/:userId/room/:roomId", requireAuth, (req, res, next) => {
-  const userId = req.params.userId;
+router.get("/room/:roomId", (req, res, next) => {
 
-  let authUsersList = [];
-  let targetRoomSettings;
+  // Returns the room settings
+  // userCreated and roomId are ObjectIds
+  Room.findOne({ room: req.params.roomId }).
+  populate('roomSettings').
+  exec(function (err, room) {
+    if (err) return (err);
+    // console.log(room);
+    // prints "The author is Ian Fleming"
+  });
 
-  // Room.findById(req.params.roomId)
-  // .populate("roomSettings")
-  // .exec((err, roomSettings) => {
-  //   console.log(roomSettings);
-  //   targetRoomSettings = roomSettings
+  Image.find({ room: req.params.roomId}).
+  populate('image').
+  exec(function (err, image) {
+    if (err) return (err);
+    console.log('Here is da image', image);
+  })
+
+
+
+  // Settings.findById(targetRoomSettings)
+  // .exec((err, settings) => {
+  //   if (err) console.log('Error while fetching settings', err);
+  //   res.send(settings);
   // })
 
-  // Room.findById( req.params.roomId )
-  //   .populate("authUsers")
-  //   .exec((err, room) => {
-  //     if (err) throw err;
-  //     // check if userId is in authUsersList which is in Room
-  //     authUsersList = room.authUsers;
-  //     console.log('This is the authUserList', authUsersList);
-  //     // if authUserList contains userId, allow the user to enter
-  //     authUsersList.map((p) => {
-  //       if (p._id == userId) {
-  //         res.status(200).send(targetRoomSettings);
-  //       } else {
-  //         res.status(401).send('You are unauthorized to view this room.');
-  //       }
-  //     });
-  //   })
-
-  Room.findOne({ _id: req.params.roomId}, (err, result) => {
-    res.send(result);
-  })
+  // Image.find({ room: req.params.roomId })
+  // .exec((err, images) => {
+  //   res.send(images);
+  // })
+  // Room.findOne({ _id: req.params.roomId}, (err, result) => {
+  //   res.send(result);
+  // })
 });
 
 // Create a new room
@@ -199,35 +210,41 @@ router.put("/user/:userId/room/:roomId", (req, res, next) => {
   console.log(req.body);
 });
 
-router.get("/room/:roomId/gallery", (req, res, next) => {
-  const roomId = req.params.roomId;
-  Room.findById( roomId )
-  .exec((err, targetRoom) => {
-      if (err) return next(err);
-      console.log(targetRoom.gallery);
-      res.send(targetRoom.gallery);
-  })
-});
+// router.get("/room/:roomId/gallery", (req, res, next) => {
+//   const roomId = req.params.roomId;
+//   Image.find({ room: roomId}, (err, result) => {
+//     res.send(result);
+//   })
+//   // Room.findById( roomId )
+//   // .exec((err, targetRoom) => {
+//   //     if (err) return next(err);
+//   //     console.log(targetRoom.gallery);
+//   //     res.send(targetRoom.gallery);
+//   // })
+// });
 
-router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
+router.post("/room/:roomId/gallery", async (req, res, next) => {
+  // console.log(`params: ${req.params.roomId}`);
+  console.log(req.body.room);
   // Turns req.body into a string
-  const string = JSON.stringify(req.body);
+  const string = JSON.stringify(req.body.image);
   // Replaces white spaces with +
   const image = string.replace(/\s/g, "+");
   // Gets rid of the "" we don't need
   const imageSplit = (image.split('"')[1]);
   // This renders the base64 image successfully.
-  console.log(imageSplit);
+  // console.log(imageSplit);
   // This gets rid of the data:image/png;base64,
   var base64result = imageSplit.split(',')[1];
 
   const buffer = Buffer.from(base64result, 'base64');
 
+
   let newImage = new Image({
     name: req.body.name,
     desc: req.body.desc,
-    user: req.params.userId,
-    room: req.params.roomId,
+    user: req.body.artist,
+    room: req.body.room,
     img: {
       data: buffer,
       contentType: 'image/png'
@@ -236,49 +253,49 @@ router.post("/user/:userId/room/:roomId/gallery", async (req, res, next) => {
   });
   newImage.save();
   
-  let targetUser = User.findOne({ _id: req.params.userId }).then(function(user){
-    console.log(user);
-    user.gallery.push(newImage._id);
-    user.save();
-  });
+  // let targetUser = User.findOne({ _id: req.params.userId }).then(function(user){
+  //   console.log(user);
+  //   user.gallery.push(newImage._id);
+  //   user.save();
+  // });
 
-  let targetRoom = Room.findOne({ _id: req.params.roomId }).then(function(room){
+  let targetRoom = Room.findOne({ _id: req.body.room }).then(function(room){
     console.log(room);
     room.gallery.push(newImage._id);
     room.save();
   });
+  // console.log(newImage);
+  res.send(newImage);
   
 });
 
-router.get("/user/:userId/room/:roomId/gallery", (req, res, next) => {
+router.get("/room/:roomId/gallery", (req, res, next) => {
 
-  let data = [];
+  let data = {};
+  console.log(req.params.roomId);
 
   const query = { room: req.params.roomId };
   Image.find(query)
     .exec((err, images) => {
+      if (err) throw err;
       // Check to see if there are images in db.
-      if (images.length > 0) {
-      // Hardcode first image for development
+      if (images) {
       console.log(`Images is ${images.length} long!`);
+      // console.log()
       // console.log(`Images is a ${typeof images}!`);
       // object (allegedly)
       // Loop through images
 
-      data = images.map((image) => {
-        return Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, "");
-      });
-      // const finalImages = data.replace(/'/g, "");
-      // Convert binary Buffer back to base64
-      // data = Buffer.from(images[1].img.data, 'binary').toString('base64');
+      
+      data = images.map((image) => (
+        {
+          id: image._id,
+          image: Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, ""),
+          user: image.user
+        }
 
+      ));
 
-      // Response (below) gives an error 413 on client side.
-      // res.send(`<img alt="img" src=${data}></img>`);
-      // res.writeHead(200, {
-      //   'Content-Type': 'image/png',
-      //   'Content-Length': data.length
-      // });
       res.send(data); 
       // If there are no images in db, return null
       } else {

@@ -17,6 +17,8 @@ const initCanvas = (width, height) => {
   return { canvas, canvasContext };
 };
 
+
+
 const getToolStyle = tool => {
   switch (tool) {
     case "felt-tip":
@@ -122,8 +124,8 @@ const getDrawPoints = (stage, image, lastPointerPosition) => {
 export default class PaintingArea extends Component {
   constructor(props) {
     super(props);
-
-    const { width, height, tool, color } = this.props;
+    console.log(props);
+    const { width, height, tool, color, erase } = this.props;
     const { canvas, canvasContext } = initCanvas(width, height);
 
     updatePaintingStyle(canvasContext, { tool, color });
@@ -133,13 +135,24 @@ export default class PaintingArea extends Component {
 
     this.isPaint = false;
     this.lastPointerPosition = null;
+    this.erase = erase;
 
     this.startPainting = this.startPainting.bind(this);
     this.finishPainting = this.finishPainting.bind(this);
     this.processPainting = this.processPainting.bind(this);
+    this.clearCanvas = this.clearCanvas.bind(this);
     this.socketRef = React.createRef();
 
     this.socket = socketIOClient(ENDPOINT);
+    
+  }
+
+ clearCanvas() {
+    // this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.canvasContext.fillStyle = '#FFFFFF';
+    this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.canvasContext.beginPath();
+    this.update();
   }
 
   startPainting() {
@@ -185,6 +198,12 @@ export default class PaintingArea extends Component {
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
+    let settings = document.querySelector('#drawing-settings');
+    let btn = document.createElement("button");
+    btn.innerHTML = "Clear Canvas";
+    btn.onclick = () => this.clearCanvas();
+    settings.appendChild(btn);
+
 
     this.socket.on('drawing', data => {
       // console.log(data);
@@ -201,15 +220,20 @@ export default class PaintingArea extends Component {
   render() {
     const { x, y, width, height, tool, color, image } = this.props;
     const { canvas, canvasContext } = this;
-   
 
+    // let settings = document.querySelector('#drawing-settings');
+    // let btn = document.createElement("button");
+    // btn.innerHTML = "Clear Canvas";
+    // btn.onclick = () => this.clearCanvas();
+    // settings.appendChild(btn);
+    // document.body.appendChild(btn);
+   
 
     updatePaintingStyle(canvasContext, { tool, color });
 
     return (
 
       <div className="painting-container">
-       
         <Image
             x={x}
             y={y}
@@ -217,12 +241,14 @@ export default class PaintingArea extends Component {
             height={height}
             image={canvas}
             stroke={"green"}
+            erase={(erase) => this.clearCanvas()}
             ref={node => {
               this.image = node;
             }}
         />
         
       </div>
+      
       
       
     );
