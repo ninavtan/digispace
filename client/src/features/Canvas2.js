@@ -20,7 +20,7 @@ const Canvas = (props) => {
   const [erase, setErase] = useState(false);
   const [images, setImages] = useState([]);
 
-  
+  console.log(props);
   const drawingRef = useRef(null);
 
 
@@ -39,11 +39,8 @@ const Canvas = (props) => {
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
     dispatch(postGalleryImage(props.roomId, base64image, guestName))
-    dispatch(fetchGalleryImages(props.roomId, props.userId, props.token))
-  }
+    props.history.push(`/room/${props.roomId}`);
 
-  const handleSave = () => {
-    alert('saved');
   }
 
 
@@ -62,11 +59,11 @@ const Canvas = (props) => {
       </DrawingSettingsContainer>
 
       
-    <Stage width={800} height={500} ref={drawingRef} className="konva-stage">
+    <Stage width={500} height={500} ref={drawingRef} className="konva-stage">
       <Layer>
         {/* Will hold image background */}
         <Rect
-        x={225}
+        x={20}
         y={55}
         fill={"white"}
         width={400}
@@ -75,7 +72,7 @@ const Canvas = (props) => {
 
         {/* User-interactive canvas */}
         <PaintingArea
-          x={225}
+          x={20}
           y={55}
           width={400}
           height={400}

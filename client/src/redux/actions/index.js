@@ -85,12 +85,13 @@ export const fetchGalleryImages = (roomId) => dispatch => {
 export const postGalleryImage = (roomId, image, guestName) => dispatch => {
   const url = `${ROOT_URL}/room/${roomId}/gallery`
   
-  const imageToSend = {image: image, artist: guestName }
+  const imageToSend = {room: roomId, image: image, artist: guestName }
+  console.log(imageToSend);
 
   axios.post(url, imageToSend)
     .then((response) => {
       console.log(`This is the response: ${response.data}`);
-      dispatch({ type: FETCH_GALLERY_IMAGES, payload: response.data })
+      dispatch({ type: POST_GALLERY_IMAGE, payload: response.data });
     })
     .catch((err) => {
       console.log(`There was a problem posting that gallery image`, err);

@@ -224,6 +224,8 @@ router.put("/user/:userId/room/:roomId", (req, res, next) => {
 // });
 
 router.post("/room/:roomId/gallery", async (req, res, next) => {
+  // console.log(`params: ${req.params.roomId}`);
+  console.log(req.body.room);
   // Turns req.body into a string
   const string = JSON.stringify(req.body.image);
   // Replaces white spaces with +
@@ -231,7 +233,7 @@ router.post("/room/:roomId/gallery", async (req, res, next) => {
   // Gets rid of the "" we don't need
   const imageSplit = (image.split('"')[1]);
   // This renders the base64 image successfully.
-  console.log(imageSplit);
+  // console.log(imageSplit);
   // This gets rid of the data:image/png;base64,
   var base64result = imageSplit.split(',')[1];
 
@@ -242,7 +244,7 @@ router.post("/room/:roomId/gallery", async (req, res, next) => {
     name: req.body.name,
     desc: req.body.desc,
     user: req.body.artist,
-    room: req.params.roomId,
+    room: req.body.room,
     img: {
       data: buffer,
       contentType: 'image/png'
@@ -257,12 +259,12 @@ router.post("/room/:roomId/gallery", async (req, res, next) => {
   //   user.save();
   // });
 
-  let targetRoom = Room.findOne({ _id: req.params.roomId }).then(function(room){
+  let targetRoom = Room.findOne({ _id: req.body.room }).then(function(room){
     console.log(room);
     room.gallery.push(newImage._id);
     room.save();
   });
-  console.log(newImage);
+  // console.log(newImage);
   res.send(newImage);
   
 });
@@ -289,6 +291,7 @@ router.get("/room/:roomId/gallery", (req, res, next) => {
         {
           id: image._id,
           image: Buffer.from(image.img.data, 'binary').toString('base64').replace(/'/g, ""),
+          user: image.user
         }
 
       ));

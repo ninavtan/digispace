@@ -1,10 +1,11 @@
-import { FETCH_GALLERY_IMAGES } from "../actions/types";
+import { FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE } from "../actions/types";
 
 const DEFAULT_STATE = {
   images: [
   {
     id: null,
     image: null,
+    user: null,
   }
 ]
 }
@@ -13,9 +14,13 @@ const DEFAULT_STATE = {
 export default function galleryReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case FETCH_GALLERY_IMAGES:
-   return {...state, images: [action.payload]};
+      console.log(action.payload)
+      return {...state, images: [action.payload]};
 
-    
+    case POST_GALLERY_IMAGE:
+    console.log(`This is the response when posting an image: ${action.payload.image}`)
+    return [...state.images, action.payload]
+
       
     default:
       return state;

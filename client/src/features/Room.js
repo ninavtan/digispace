@@ -40,10 +40,11 @@ export default function Room(props) {
     return gallery.images[0];
   });
 
-  console.log(gallery);
+  console.log(gallery); 
 
   const displayImages = () => {
-    if (gallery == 'undefined' || gallery.length == 0) {
+  console.log('logged!');
+    if (gallery.id == 'null' || (gallery.length <= 0)) {
       console.log('no images');
       return (
         <h2>Images coming soon...</h2>
@@ -53,11 +54,13 @@ export default function Room(props) {
       return (
         gallery.map((entry) => {
           return (
+            <div>
             <img id="gallery-image" src={`data:image/png;base64,${entry.image}`} alt="submitted-drawing"></img>
+            <p>drawn by {entry.user}</p>
+            </div>
           )
         })
       )
-      
     }
   }
 
@@ -85,15 +88,15 @@ export default function Room(props) {
       <Link to="/">Back To Index</Link>
 
         <Row xs="auto">
-          <Col xs="7"> 
+          <Col sm="7"> 
             <CanvasContainer>
               <h3>Leave a cool drawing for other members of this room :)</h3>
-              <Canvas userId={params.userId} roomId={params.roomId} />
+              <Canvas userId={params.userId} roomId={params.id} history={props.history} />
             </CanvasContainer>
           </Col>
        
       
-      <Col xs="5">
+      <Col sm="5">
       <GalleryContainer>
         <h3>gallery</h3>
         <Gallery>  
