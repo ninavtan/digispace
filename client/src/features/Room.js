@@ -26,6 +26,20 @@ export default function Room(props) {
   const dispatch = useDispatch();
   let params = useParams();
 
+
+  //////////////////////////// socket.io (in-progress) ///////////////////////
+  // const [response, setResponse] = useState("");
+  // useEffect(() => {
+  //   const socket = socketIOClient(ENDPOINT);
+  //   socket.on("FromAPI", data => {
+  //     setResponse(data);
+  //   });
+  //   socket.on("drawing", data=> {
+  //     console.log(data);
+  //     // console logs the px pys
+  //   } )
+  // }, []);
+
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.id))
     dispatch(fetchGalleryImages(params.id))
@@ -37,14 +51,14 @@ export default function Room(props) {
   });
 
   const gallery = useSelector(({ gallery }) => {
-    return gallery.images[0];
+    return gallery;
   });
 
   console.log(gallery); 
 
   const displayImages = () => {
   console.log('logged!');
-    if (gallery.id == 'null' || (gallery.length <= 0)) {
+    if (gallery == 'null' || (gallery.length <= 0)) {
       console.log('no images');
       return (
         <h2>Images coming soon...</h2>
@@ -73,19 +87,12 @@ export default function Room(props) {
 
  
 
-  //////////////////////////// socket.io (in-progress) ///////////////////////
-  // const [response, setResponse] = useState("");
-  // useEffect(() => {
-  //   const socket = socketIOClient(ENDPOINT);
-  //   socket.on("FromAPI", data => {
-  //     setResponse(data);
-  //   });
-  // }, []);
 
   return (
     <Container fluid className="room-container">
       <RoomHeader name={room.name}/>
       <Link to="/">Back To Index</Link>
+      {/* <h2>it's {response}</h2> */}
 
         <Row xs="auto">
           <Col sm="7"> 

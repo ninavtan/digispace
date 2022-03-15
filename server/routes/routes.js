@@ -295,7 +295,8 @@ router.get("/room/:roomId/gallery", (req, res, next) => {
         }
 
       ));
-
+      console.log(data);
+      // data is objects within an array
       res.send(data); 
       // If there are no images in db, return null
       } else {

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 import PaintingArea from './PaintingArea';
@@ -12,13 +12,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 
+
 const Canvas = (props) => {
   const dispatch = useDispatch();
 
   const [tool, setTool] = useState('brush');
   const [color, setColor] = useState('#e66465');
   const [erase, setErase] = useState(false);
-  const [images, setImages] = useState([]);
 
   console.log(props);
   const drawingRef = useRef(null);
@@ -39,7 +39,8 @@ const Canvas = (props) => {
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
     dispatch(postGalleryImage(props.roomId, base64image, guestName))
-    props.history.push(`/room/${props.roomId}`);
+    dispatch(fetchGalleryImages(props.roomId));
+    // props.history.push(`/room/${props.roomId}`);
 
   }
 
