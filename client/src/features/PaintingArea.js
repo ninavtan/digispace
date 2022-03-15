@@ -3,8 +3,6 @@ import socketIOClient from "socket.io-client";
 import Konva from "konva";
 import { Image, Rect } from "react-konva";
 import { Html } from 'react-konva-utils';
-import { initiateSocketConnection } from "./socketio.service";
-import { subscribeToChat } from "./socketio.service";
 
 const ENDPOINT = "http://127.0.0.1:3001";
 
@@ -74,6 +72,25 @@ const updatePaintingStyle = (canvasContext, { tool, color }) => {
   });
 };
 
+const drawLine = (canvasContext, p1, p2, emit) => {
+
+  canvasContext.beginPath();
+  canvasContext.moveTo(p1.x, p1.y);
+  canvasContext.lineTo(p2.x, p2.y);
+  canvasContext.closePath();
+  canvasContext.stroke();
+
+  if (!emit) {return};
+  // console.log(this.socket);
+  const data = {
+    p1: {x: p1.x, y: p1.y},
+    p2: {y: p2.x, y: p2.y}
+  }
+  this.socket.emit('drawing', {
+    data
+   })
+};
+
 const onDrawingEvent = (data) => {
   console.log(data);
 }
@@ -122,41 +139,7 @@ export default class PaintingArea extends Component {
     this.processPainting = this.processPainting.bind(this);
     this.socketRef = React.createRef();
 
-<<<<<<< HEAD
-    // this.socket = socketIOClient(ENDPOINT);
-
-    this.state = {currentLines: []};
-    console.log(this.state);
-
-
-    // this.socket.on('drawing', data => {
-    //   debugger;
-    //   console.log(data);
-    //   this.drawLine(data.p1, data.p2);
-    // })
-
-  }
-
-  drawLine(p1, p2) {
-    // debugger;
-      console.log(p1, p2);
-    
-      this.canvasContext.beginPath();
-      this.canvasContext.moveTo(p1.x, p1.y);
-      this.canvasContext.lineTo(p2.x, p2.y);
-      this.canvasContext.closePath();
-      this.canvasContext.stroke();
-
-  };
-
- clearCanvas() {
-    this.canvasContext.fillStyle = '#FFFFFF';
-    this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvasContext.beginPath();
-    this.update();
-=======
     this.socket = socketIOClient(ENDPOINT);
->>>>>>> master
   }
 
   startPainting() {
@@ -166,7 +149,6 @@ export default class PaintingArea extends Component {
 
   finishPainting() {
     this.isPaint = false;
-    
   }
 
   processPainting() {
@@ -180,87 +162,46 @@ export default class PaintingArea extends Component {
       this.lastPointerPosition
     );
 
-    this.sendDrawing(point1, point2);
-
-    this.drawLine(point1, point2);
-
+    drawLine(this.canvasContext, point1, point2);
     
     this.lastPointerPosition = pointerPosition;
+
     this.update();
 
-    // this.sendDrawing(point1, point2);
+    this.sendDrawing(this.canvasContext, point1, point2);
 
   }
 
-  sendDrawing(point1, point2) {
-    console.log('sent!');
+  sendDrawing(canvasContext, point1, point2) {
     const data = {
       p1: {x: point1.x, y: point1.y},
       p2: {x: point2.x, y: point2.y}
     }
-    // state:
-    // [{p1, p2}]
     this.socket.emit('drawing', data)
-    // this.setState((prevState) => {
-    //   return {
-    //     lines: [...prevState, {data}]
-    //   };
-    // })
   }
 
   componentDidMount() {
     this.stage = this.image.getStage();
-    console.log(this.stage);
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
-<<<<<<< HEAD
-    let settings = document.querySelector('#drawing-settings');
-    let btn = document.createElement("button");
-    btn.innerHTML = "Clear Canvas";
-    btn.onclick = () => this.clearCanvas();
-    settings.appendChild(btn);
 
-    this.socket = socketIOClient(ENDPOINT);
-=======
->>>>>>> master
-
-    // This is working! But is late. 
-    // Previous drawing renders after clicking on canvas.
     this.socket.on('drawing', data => {
-      console.log(data);
-      this.drawLine(data.p1, data.p2);
-      // this.setState((prevState) => {lines: [...prevState, {data}]})
+      // console.log(data);
+      drawLine(this.canvasContext, data.p1, data.p2);
+      
     })
 
   }
 
   update() {
     this.image.getLayer().batchDraw();
-
-    // This doesn't work.
-    // Heavy -- wrong
-    // this.socket.on('drawing', data => {
-    //   this.drawLine(this.canvasContext, data.p1, data.p2);
-    // })
-   
   }
 
   render() {
-<<<<<<< HEAD
-=======
     const { x, y, width, height, tool, color, image } = this.props;
     const { canvas, canvasContext } = this;
->>>>>>> master
    
-    // This does not work -- is really heavy.
-    // this.socket.on('drawing', data => {
-    //   console.log('socketina!')
-    //   this.drawLine(data.p1, data.p2);
-    // })
-
-    const { x, y, width, height, tool, color, image } = this.props;
-    const { canvas, canvasContext } = this;   
 
 
     updatePaintingStyle(canvasContext, { tool, color });

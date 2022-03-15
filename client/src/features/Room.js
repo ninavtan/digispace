@@ -27,67 +27,16 @@ export default function Room(props) {
   const dispatch = useDispatch();
   let params = useParams();
 
-<<<<<<< HEAD
-
-  //////////////////////////// socket.io (in-progress) ///////////////////////
-  // const [response, setResponse] = useState("");
-  // useEffect(() => {
-  //   const socket = socketIOClient(ENDPOINT);
-  //   socket.on("FromAPI", data => {
-  //     setResponse(data);
-  //   });
-  //   socket.on("drawing", data=> {
-  //     console.log(data);
-  //     // console logs the px pys
-  //   } )
-  // }, []);
-
-=======
   // get local storage 'bearer'
   let token = localStorage.getItem('Bearer');
   console.log(token);
   
->>>>>>> master
   useEffect(() => {
     
     dispatch(fetchCurrentRoom(params.userId, params.roomId, token))
     dispatch(fetchGalleryImages(params.roomId, params.userId, token));
 
-<<<<<<< HEAD
-  const room = useSelector(({ rooms }) => {
-    return rooms.entries[params.id]
-  });
-
-  const gallery = useSelector(({ gallery }) => {
-    return gallery;
-  });
-
-  console.log(gallery); 
-
-  const displayImages = () => {
-  console.log('logged!');
-    if (gallery == 'null' || (gallery.length <= 0)) {
-      console.log('no images');
-      return (
-        <h2>Images coming soon...</h2>
-      )
-    } else {
-      // return (<h2>images</h2>)
-      return (
-        gallery.map((entry) => {
-          return (
-            <div>
-            <img id="gallery-image" src={`data:image/png;base64,${entry.image}`} alt="submitted-drawing"></img>
-            <p>drawn by {entry.user}</p>
-            </div>
-          )
-        })
-      )
-    }
-  }
-=======
   }, []);
->>>>>>> master
 
   const currentRoom = useSelector(state => state.currentRoom)
   // const currentRoomSettings = useSelector(state => state.currentRoom.roomSettings);
@@ -96,8 +45,6 @@ export default function Room(props) {
   console.log(currentGallery);
 
 
-<<<<<<< HEAD
-=======
 //////////////////////////// socket.io (in-progress) ///////////////////////
   // const [response, setResponse] = useState("");
   // useEffect(() => {
@@ -106,7 +53,6 @@ export default function Room(props) {
   //     setResponse(data);
   //   });
   // }, []);
->>>>>>> master
 
   const displayImages = () => {
     if (currentGallery.length > 0) {
@@ -129,14 +75,7 @@ export default function Room(props) {
 
   return (
     <Container fluid className="room-container">
-<<<<<<< HEAD
-      <RoomHeader name={room.name}/>
-      <Link to="/">Back To Index</Link>
-      {/* <h2>it's {response}</h2> */}
-
-=======
       <RoomHeader name={currentRoom.name}/>
->>>>>>> master
         <Row xs="auto">
           <Col xs="7"> 
             <CanvasContainer>
