@@ -1,14 +1,7 @@
-#root {
-  background-image: url("./features/background.png");
-  height: 100%;
-  font-family: gopher, sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
 .room-container {
-  background-image: url("./features/background.png");
-  height: 100%;
+  /* max-width: 100%;
+  overflow-x: hidden; */
+  /* doesn't fix problem */
 }
 
 .image {
@@ -19,14 +12,8 @@
   background-color: blue;
 }
 
-.placeholder {
-  height: 400px;
-  width: 400px;
-  background-color: violet;
-}
-
 .gallery-container {
-  width: 100%;
+  width: 70%;
   margin: 4px, 4px;
   padding: 4px;
   height: 70%;
@@ -35,10 +22,20 @@
   text-align: justify;
 }
 
-#gallery-image {
+.gallery-images {
   width: 70%;
   height: 70%;
+  padding: none;
+  margin: none;
 }
+
+/* .canvas-container {
+  width: 100%;
+} */
+
+/* .room-container {
+  flex-direction: row;
+} */
 
 .konva-stage {
   text-align: center;

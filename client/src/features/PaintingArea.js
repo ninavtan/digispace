@@ -105,8 +105,8 @@ const getDrawPoints = (stage, image, lastPointerPosition) => {
 export default class PaintingArea extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
-    const { width, height, tool, color, erase } = this.props;
+
+    const { width, height, tool, color } = this.props;
     const { canvas, canvasContext } = initCanvas(width, height);
 
     updatePaintingStyle(canvasContext, { tool, color });
@@ -116,14 +116,13 @@ export default class PaintingArea extends Component {
 
     this.isPaint = false;
     this.lastPointerPosition = null;
-    this.erase = erase;
 
     this.startPainting = this.startPainting.bind(this);
     this.finishPainting = this.finishPainting.bind(this);
     this.processPainting = this.processPainting.bind(this);
-    this.clearCanvas = this.clearCanvas.bind(this);
     this.socketRef = React.createRef();
 
+<<<<<<< HEAD
     // this.socket = socketIOClient(ENDPOINT);
 
     this.state = {currentLines: []};
@@ -155,6 +154,9 @@ export default class PaintingArea extends Component {
     this.canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvasContext.beginPath();
     this.update();
+=======
+    this.socket = socketIOClient(ENDPOINT);
+>>>>>>> master
   }
 
   startPainting() {
@@ -212,6 +214,7 @@ export default class PaintingArea extends Component {
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
+<<<<<<< HEAD
     let settings = document.querySelector('#drawing-settings');
     let btn = document.createElement("button");
     btn.innerHTML = "Clear Canvas";
@@ -219,6 +222,8 @@ export default class PaintingArea extends Component {
     settings.appendChild(btn);
 
     this.socket = socketIOClient(ENDPOINT);
+=======
+>>>>>>> master
 
     // This is working! But is late. 
     // Previous drawing renders after clicking on canvas.
@@ -242,6 +247,11 @@ export default class PaintingArea extends Component {
   }
 
   render() {
+<<<<<<< HEAD
+=======
+    const { x, y, width, height, tool, color, image } = this.props;
+    const { canvas, canvasContext } = this;
+>>>>>>> master
    
     // This does not work -- is really heavy.
     // this.socket.on('drawing', data => {
@@ -252,11 +262,13 @@ export default class PaintingArea extends Component {
     const { x, y, width, height, tool, color, image } = this.props;
     const { canvas, canvasContext } = this;   
 
+
     updatePaintingStyle(canvasContext, { tool, color });
 
     return (
 
       <div className="painting-container">
+       
         <Image
             x={x}
             y={y}
@@ -264,14 +276,12 @@ export default class PaintingArea extends Component {
             height={height}
             image={canvas}
             stroke={"green"}
-            erase={(erase) => this.clearCanvas()}
             ref={node => {
               this.image = node;
             }}
         />
         
       </div>
-      
       
       
     );
