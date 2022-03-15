@@ -8,7 +8,7 @@ const dataRoutes = require("./routes/main");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
-const passport = require("passport");
+// const passport = require("passport");
 const jwt = require("jwt-simple");
 var router = express.Router();
 
@@ -23,7 +23,7 @@ app.use(cors({
 app.use(express.static('./server/public'));
 app.use(bodyParser.json({ limit: '50mb' }));
 
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 
 const server = http.createServer(app);
@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
 
   socket.on('drawing', (data) => {
     // not getting p1 values, only p2!
-    console.log(data);
+    // console.log(data);
     socket.broadcast.emit('drawing', data);
     // socket.emit('drawing', data);
   })
