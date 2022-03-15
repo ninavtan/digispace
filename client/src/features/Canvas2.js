@@ -1,5 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
-import Konva from 'konva';
+import React, {useState, useRef} from 'react';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 import PaintingArea from './PaintingArea';
 import RedoPaintingArea from './RedoPaintingArea';
@@ -12,13 +11,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 
-
 const Canvas = (props) => {
   const dispatch = useDispatch();
 
   const [tool, setTool] = useState('brush');
   const [color, setColor] = useState('#e66465');
-  const [erase, setErase] = useState(false);
+  const [images, setImages] = useState([]);
 
   
   const drawingRef = useRef(null);
