@@ -144,7 +144,7 @@ router.get("/user/:user/rooms", (req, res, next) => {
 // Fetches a specific room
 // TODO: Checks if the user has authorization to enter the room
 // Needs to work on the backend
-router.get("/user/:userId/room/:roomId", requireAuth, (req, res, next) => {
+router.get("/user/:userId/room/:roomId", (req, res, next) => {
   const userId = req.params.userId;
 
   let authUsersList = [];

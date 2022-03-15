@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import React, {useState, useRef, useEffect} from 'react';
 import Konva from 'konva';
-=======
-import React, {useState, useRef} from 'react';
->>>>>>> master
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 import PaintingArea from './PaintingArea';
 import RedoPaintingArea from './RedoPaintingArea';
@@ -22,11 +18,7 @@ const Canvas = (props) => {
 
   const [tool, setTool] = useState('brush');
   const [color, setColor] = useState('#e66465');
-<<<<<<< HEAD
   const [erase, setErase] = useState(false);
-=======
-  const [images, setImages] = useState([]);
->>>>>>> master
 
   
   const drawingRef = useRef(null);
@@ -44,17 +36,10 @@ const Canvas = (props) => {
     console.log('~saved');
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();
-<<<<<<< HEAD
-    dispatch(postGalleryImage(props.roomId, base64image, guestName))
+    dispatch(postGalleryImage(props.roomId, base64image))
     dispatch(fetchGalleryImages(props.roomId));
     // props.history.push(`/room/${props.roomId}`);
 
-=======
-    dispatch(postGalleryImage(props.roomId, props.userId, base64image))
-    dispatch(fetchGalleryImages(props.roomId, props.userId, props.token))
-    
-  
->>>>>>> master
   }
 
 
