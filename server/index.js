@@ -8,28 +8,23 @@ const dataRoutes = require("./routes/main.js");
 const path = require('path');
 const cors = require("cors");
 const socketIo = require("socket.io");
-// const passport = require("passport");
 const jwt = require("jwt-simple");
 var router = express.Router();
+const keys = require('./config/keys');
 
-
-mongoose.connect("mongodb+srv://mern:mongodb@cluster0.zdddu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+// DB Setup
+mongoose.connect(keys.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}, function(err, result) {
+  if (err) console.log(err)
+  console.log(result);
 });
-
-// mongoose.connect("mongodb://localhost/finalproject", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
 
 app.use(cors({
   origin: '*'
 }));
-app.use(express.static('./server/public'));
 app.use(bodyParser.json({ limit: '50mb' }));
-
-// app.use(passport.initialize());
 
 
 const server = http.createServer(app);
@@ -102,12 +97,26 @@ app.get("/api", (req, res) => {
   res.json({message: "Hello from Express!"});
 });
 
-// Have Node serve the files for our built React app
-app.use(express.static(path.resolve(__dirname, '../client/build')));
+// // Have Node serve the files for our built React app
+// app.use(express.static(path.resolve(__dirname, '../client/build')));
 
-// All other GET requests not handled before will return our React app
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+// // All other GET requests not handled before will return our React app
+// app.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+// });
+
+
+if (process.env.NODE_ENV === "production") {
+  // Express will serve up production assets
+  // like our main.js file, or main.css file!
+  app.use(express.static("client/build"));
+
+  // Express will serve up the index.html file
+  // if it doesn't recognize the route
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
