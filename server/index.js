@@ -12,7 +12,12 @@ const socketIo = require("socket.io");
 const jwt = require("jwt-simple");
 var router = express.Router();
 
-mongoose.connect("mongodb+srv://mern:mongodb@cluster0.zdddu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+// mongoose.connect("mongodb+srv://mern:mongodb@cluster0.zdddu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+
+mongoose.connect("mongodb://localhost/finalproject", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
