@@ -3,7 +3,7 @@ import { FETCH_ROOMS, LOGIN_SUCCESS, LOGIN_FAIL, FETCH_CURRENT_ROOM, FETCH_GALLE
 
 import { authLogin } from "../../services/auth.service";
 
-const ROOT_URL = 'https://calm-basin-65498.herokuapp.com/';
+const ROOT_URL = 'https://calm-basin-65498.herokuapp.com';
 
 export const fetchRooms = () => dispatch => {
   const url = `${ROOT_URL}/rooms`;
