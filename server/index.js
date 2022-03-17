@@ -2,15 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
-const http = require('http');
+const http = require("http");
 const authRoutes = require("./routes/routes.js");
 const dataRoutes = require("./routes/main.js");
-const path = require('path');
+const path = require("path");
 const cors = require("cors");
 const socketIo = require("socket.io");
 const jwt = require("jwt-simple");
 var router = express.Router();
-const keys = require('./config/keys');
+const keys = require("./config/keys");
 
 // DB Setup
 mongoose.connect(keys.MONGODB_URI, {
@@ -37,15 +37,31 @@ const io = socketIo(server, {
 
 io.on("connection", (socket) => {
   console.log("New client connected");
-  sayHi(socket);
-  /* drawing event is a custom event that we will create in our sketch.js file later on. Socket.broadcast.emit is used to send out the data to all sockets that are currently online, except the socket that is sending it.
-  */
+  socket.on('join', ({ name, room }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, room });
+
+    if(error) return callback(error);
+
+    socket.join(user.room);
+
+    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+
+    callback();
+  });
+  
 
   
   getApiAndEmit(socket);
 
   socket.on('my message', (msg) => {
     socket.broadcast.emit('my broadcast', `server: ${msg}`);
+  });
+
+  socket.on('chat message', (msg) => {
+    socket.broadcast.emit('chat message', msg);
   });
 
 
@@ -62,11 +78,6 @@ const getApiAndEmit = socket => {
   // Emitting a new message. Will be consumed by the client
   socket.emit("FromAPI", response);
 };
-
-const sayHi = socket => {
-  const response = 'hi biddie :)'
-  socket.emit("Greetings", response);
-}
 
 app.use(router);
 
@@ -113,7 +124,6 @@ if (process.env.NODE_ENV === "production") {
 
   // Express will serve up the index.html file
   // if it doesn't recognize the route
-  const path = require("path");
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });

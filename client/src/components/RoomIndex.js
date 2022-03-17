@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { fetchRooms } from "../redux/actions";
 import _ from 'lodash';
+import styled from 'styled-components';
+
 
 export default function RoomIndex(props) {
   const rooms = useSelector(state => state.rooms);
@@ -18,15 +20,15 @@ export default function RoomIndex(props) {
     if (!_.isEmpty(rooms) > 0) {
       return rooms.order.map((roomID) => {
         return (
-          <li className="list-group-item" key={roomID}>
+          <RoomList className="list-group-item" key={roomID}>
             <Link to={`/room/${roomID}`}>
               {rooms.entries[roomID].name}
             </Link>
-          </li>
+          </RoomList>
         );
       })
     } else {
-      return <div>No posts to show</div>
+      return <div>No rooms to show</div>
     }
   }
 
@@ -50,9 +52,17 @@ export default function RoomIndex(props) {
       </div>
       <br></br>
       <h3>Featured Rooms</h3>
-      <ul className="list-group">
+      <RoomList className="list-group">
         {renderRooms()}
-      </ul>
+      </RoomList>
     </div>
   )
 };
+
+const RoomList = styled.ul`
+  display: flex;  
+  border-radius: 4em;
+  height: 40%;
+  width: 50%;
+  margin: 0 auto;
+`
