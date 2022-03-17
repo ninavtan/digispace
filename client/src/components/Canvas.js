@@ -21,6 +21,14 @@ const Canvas = (props) => {
   console.log(props);
   const drawingRef = useRef(null);
 
+  React.useEffect(() => {
+    function handleResize() {
+      console.log('resized to: ', window.innerWidth, 'x', window.innerHeight)
+    }
+
+    window.addEventListener('resize', handleResize)
+  })
+
 
   const handleChangeTool = event => {
     setTool(event.target.value);
@@ -39,9 +47,11 @@ const Canvas = (props) => {
     dispatch(postGalleryImage(props.roomId, base64image, guestName))
     dispatch(fetchGalleryImages(props.roomId));
     // props.history.push(`/room/${props.roomId}`);
-
   }
 
+  const sceneWidth = 500;
+  const sceneHeight = 500;
+ 
 
   return (
     <div className="canvas-container">
@@ -57,24 +67,24 @@ const Canvas = (props) => {
       
       </DrawingSettingsContainer>
 
-      
-    <Stage width={500} height={500} ref={drawingRef} className="konva-stage">
+    <div id="stage-parent">
+     <Stage height = {600} width = {600} ref={drawingRef} className="konva-stage">
       <Layer>
         {/* Will hold image background */}
         <Rect
-        x={20}
-        y={55}
+        x={75}
+        y={50}
         fill={"white"}
-        width={400}
-        height={400}>
+        width={500}
+        height={500}>
         </Rect>
 
         {/* User-interactive canvas */}
         <PaintingArea
-          x={20}
-          y={55}
-          width={400}
-          height={400}
+          x={75}
+          y={50}
+          width={500}
+          height={500}
           tool={tool}
           color={color}
           erase={erase}
@@ -82,6 +92,7 @@ const Canvas = (props) => {
         />
         </Layer>
     </Stage>
+    </div>
 
     <Form noValidate onSubmit={handleSaveClick}>
       <Form.Control

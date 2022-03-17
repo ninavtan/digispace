@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams, Outlet } from "react-router-dom";
 import { fetchCurrentRoom } from '../redux/actions';
 import { fetchGalleryImages } from '../redux/actions';
-import Canvas from './Canvas2';
+import Canvas from './Canvas';
 import RoomHeader from './RoomHeader';
+import Chat from './Chat';
 import styled from 'styled-components';
 
 // import Gallery from './Gallery';
@@ -15,8 +16,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
-//
-// const ENDPOINT = "http://127.0.0.1:3001";
+
+const ENDPOINT = "http://127.0.0.1:3001";
 // const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
 
 
@@ -28,17 +29,13 @@ export default function Room(props) {
 
 
   //////////////////////////// socket.io (in-progress) ///////////////////////
-  // const [response, setResponse] = useState("");
-  // useEffect(() => {
-  //   const socket = socketIOClient(ENDPOINT);
-  //   socket.on("FromAPI", data => {
-  //     setResponse(data);
-  //   });
-  //   socket.on("drawing", data=> {
-  //     console.log(data);
-  //     // console logs the px pys
-  //   } )
-  // }, []);
+  const [response, setResponse] = useState("");
+  useEffect(() => {
+    const socket = socketIOClient(ENDPOINT);
+    socket.on("FromAPI", data => {
+      setResponse(data);
+    });
+  }, []);
 
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.id))
@@ -92,7 +89,7 @@ export default function Room(props) {
     <Container fluid className="room-container">
       <RoomHeader name={room.name}/>
       <Link to="/">Back To Index</Link>
-      {/* <h2>it's {response}</h2> */}
+      <h2>it's {response}</h2>
 
         <Row xs="auto">
           <Col sm="7"> 
@@ -103,15 +100,17 @@ export default function Room(props) {
           </Col>
        
       
-      <Col sm="5">
-      <GalleryContainer>
-        <h3>gallery</h3>
-        <Gallery>  
-        {displayImages()}
-        </Gallery>  
-      </GalleryContainer>  
+      <Col id="gallery-and-chat" sm="5">
+        <GalleryContainer>
+          <h3>gallery</h3>
+          <Gallery>  
+            {displayImages()}
+          </Gallery>  
+        </GalleryContainer>
+
+        <Chat/>
+  
       </Col>
-       
     </Row>
       </Container>
 
@@ -141,4 +140,5 @@ const CanvasContainer = styled.div`
 
 const GalleryContainer = styled.div`
   text-align: center;
+  margin-bottom: 1em;
 `
