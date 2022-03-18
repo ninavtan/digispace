@@ -64,7 +64,6 @@ io.on("connection", (socket) => {
     
     const user = getUser(name);
     
-    console.log('this is the user', user);
     socket.to(user.room).emit('message', { user: user.name, text: message.text, timestamp: message.timestamp });
 
     callback({
@@ -81,16 +80,11 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('my broadcast', `server: ${msg}`);
   });
 
-  // socket.on('send message', (msg) => {
-  //   socket.broadcast.emit('send message', msg);
-  // });
-
-
   socket.on('drawing', (data) => {
     // not getting p1 values, only p2!
     // console.log(data);
-    socket.broadcast.emit('drawing', data);
-    // socket.emit('drawing', data);
+    // socket.broadcast.emit('drawing', data);
+    socket.emit('drawing', data);
   })
 });
 
