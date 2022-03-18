@@ -152,18 +152,12 @@ router.get("/user/:user/rooms", (req, res, next) => {
 });
 
 // Fetches a specific room
-// TODO: Checks if the user has authorization to enter the room
-// Needs to work on the backend
 router.get("/room/:roomId", (req, res, next) => {
 
-  // Returns the room settings
-  // userCreated and roomId are ObjectIds
   Room.findOne({ room: req.params.roomId }).
   populate('roomSettings').
   exec(function (err, room) {
     if (err) return (err);
-    // console.log(room);
-    // prints "The author is Ian Fleming"
   });
 
   Image.find({ room: req.params.roomId}).
@@ -191,7 +185,6 @@ router.get("/room/:roomId", (req, res, next) => {
 });
 
 // Create a new room
-// Working
 router.post("/user/:userId/room/new", (req,res,next) => {
 
   let newRoom = new Room({
@@ -209,19 +202,6 @@ router.post("/user/:userId/room/new", (req,res,next) => {
 router.put("/user/:userId/room/:roomId", (req, res, next) => {
   console.log(req.body);
 });
-
-// router.get("/room/:roomId/gallery", (req, res, next) => {
-//   const roomId = req.params.roomId;
-//   Image.find({ room: roomId}, (err, result) => {
-//     res.send(result);
-//   })
-//   // Room.findById( roomId )
-//   // .exec((err, targetRoom) => {
-//   //     if (err) return next(err);
-//   //     console.log(targetRoom.gallery);
-//   //     res.send(targetRoom.gallery);
-//   // })
-// });
 
 router.post("/room/:roomId/gallery", async (req, res, next) => {
   // console.log(`params: ${req.params.roomId}`);
@@ -269,7 +249,6 @@ router.post("/room/:roomId/gallery", async (req, res, next) => {
     room.gallery.push(newImage._id);
     room.save();
   });
-  // console.log(newImage);
   res.send(imageForClient);
   
 });
@@ -283,15 +262,9 @@ router.get("/room/:roomId/gallery", (req, res, next) => {
   Image.find(query)
     .exec((err, images) => {
       if (err) throw err;
-      // Check to see if there are images in db.
       if (images) {
       console.log(`Images is ${images.length} long!`);
-      // console.log()
-      // console.log(`Images is a ${typeof images}!`);
-      // object (allegedly)
-      // Loop through images
 
-      
       data = images.map((image) => (
         {
           id: image._id,

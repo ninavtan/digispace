@@ -3,66 +3,99 @@ import styled from 'styled-components';
 import socketIOClient from "socket.io-client";
 import ChatTable from './ChatTable';
 
-const ENDPOINT = "http://127.0.0.1:3001";
+const ENDPOINT = 'https://calm-basin-65498.herokuapp.com';
 
-let socket;
+// const ENDPOINT = "http://127.0.0.1:3001";
 
-const Chat = () => {
-  const [name, setName] = useState('');
+const socket = socketIOClient(ENDPOINT);
+
+
+const Chat = (props) => {
+  const [name, setName] = useState('null');
   const [messages, setMessages] = useState([]);
-  const [response, setResponse] = useState("");
+  const [users, setUsers] = useState('');
   
-  useEffect( () => {
+  useEffect(() => {
+    // This is running upon initial render and after name changes.
 
-  })
+    const room = props.room;
+    if (name !== 'null') {
+      socket.emit('join', {name, room }, (error) => {
+      if(error) {
+        setName('null');
+        alert(error);
+      }
+    });
+    socket.on("roomData", ({ users }) => {
+      setUsers(users);
+    });
+  }
 
-  // useEffect(() => {
-  //   const socket = socketIOClient(ENDPOINT);
+  }, [name]);
 
-  //   socket.on('chat message', message => {
-  //     setMessages([...messages, {message: message.message, name: message.name, timestamp: message.timestamp}]);
-  //   })
+ useEffect(() => {
+    socket.on('message', message => {
+    console.log('From the server!', message);
+    setMessages(messages => [ ...messages, message ]);
+  });
 
-  //   return () => {
-  //     socket.disconnect();
-  //   }
-
-  // }, []);
-
+ }, []);
+    
+  
 
   const handleChatSubmit = (e) => {
-    const socket = socketIOClient(ENDPOINT);
     e.preventDefault();
-    let nameInput = e.target[0];
-    let input = e.target[1];
-    if (nameInput.value && input.value) {
+    let messageInput = e.target[0];
+    if (name && messageInput.value) {
       let message = {
-        name: nameInput.value,
-        message: input.value,
+        user: name,
+        text: messageInput.value,
         timestamp: new Date().toISOString(),
       }
-      socket.emit('chat message', message);
-      input.value = '';
-      return () => {
-        socket.disconnect();
-      }
+      socket.emit('sendMessage', message, (response) => {
+        setMessages([...messages, message]);
+        console.log(response.status);
+        messageInput.value = '';
+      });
+      
+      
     }
   }
   
+  const handlenameSubmit = (e) => {
+    e.preventDefault();
+    // let name = (e.target[0].value);
+    setName(e.target[0].value);
+    // let room = props.room;
+
+
+  }
 
   return (
     <ChatContainer>
-      <Bar></Bar>
+      <Bar>{name === 'null' ? null : `welcome, ${name}!` }</Bar>
       <MessageList id="messages">
         <ChatTable messages={messages}/>
         </MessageList>
+
+      {!name === 'null' ? null : 
+      <SetnameForm onSubmit={handlenameSubmit}>
+        <SenderInput placeholder="name" id="sender-input" />
+        <br />
+        <button type="submit">start chatting</button>
+      </SetnameForm>
+      }
+        
+
+      {name === 'null' ? null : 
       <ChatInputForm onSubmit={handleChatSubmit}>
-        <SenderInput placeholder="name" id="sender-input" onChange={e => setName(e.target.value)}/>
-        {name ? <TextInput placeholder="message" id="input"/> : null}
+        {/* <WelcomeUser>welcome, {name}!</WelcomeUser> */}
+        <TextInput placeholder="message" id="input"/>
         <br />
         <br />
-        <button>{name ? 'send' : 'start chatting'}</button>
+        <button>send</button>
       </ChatInputForm>
+      }
     </ChatContainer>
     
   )
@@ -74,7 +107,7 @@ const Chat = () => {
 export default Chat;
 
 const ChatContainer = styled.div`
-  height: 30%;
+  height: 400px;
   width: 100%;
   margin: 0 auto;
   border: 1px solid black;
@@ -103,11 +136,17 @@ const TextInput = styled.input`
 margin: 0 auto;
 `
 
-const MessageList = styled.ul`
-  // width: 100%;
-  // height: 100%;
-  // color: green;
-  // list-style: none;
-  // margin-top: 1em;
-  // text-align: left;
+const MessageList = styled.div`
+height: 100%;
+overflow-y: auto;
+  
+`
+
+const SetnameForm = styled.form`
+  margin: 0 auto;
+  text-align: center;
+`
+
+const WelcomeUser = styled.span`
+  
 `

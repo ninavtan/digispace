@@ -9,8 +9,6 @@ import styled from 'styled-components';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-
-
 const Canvas = (props) => {
   const dispatch = useDispatch();
 
@@ -18,17 +16,7 @@ const Canvas = (props) => {
   const [color, setColor] = useState('#e66465');
   const [erase, setErase] = useState(false);
 
-  console.log(props);
   const drawingRef = useRef(null);
-
-  React.useEffect(() => {
-    function handleResize() {
-      console.log('resized to: ', window.innerWidth, 'x', window.innerHeight)
-    }
-
-    window.addEventListener('resize', handleResize)
-  })
-
 
   const handleChangeTool = event => {
     setTool(event.target.value);
@@ -40,7 +28,6 @@ const Canvas = (props) => {
 
   const handleSaveClick = (e) => {
     e.preventDefault();
-    console.log('~saved');
     const guestName = e.target[0].value;
     let stage = drawingRef.current.children[0];
     let base64image = stage.toDataURL();

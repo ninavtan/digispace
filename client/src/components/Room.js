@@ -22,7 +22,7 @@ const ENDPOINT = "http://127.0.0.1:3001";
 
 
 export default function Room(props) {
-  console.log(props);
+  console.log(`Room props: ${props}`);
 
   const dispatch = useDispatch();
   let params = useParams();
@@ -30,6 +30,7 @@ export default function Room(props) {
 
   //////////////////////////// socket.io (in-progress) ///////////////////////
   const [response, setResponse] = useState("");
+
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
     socket.on("FromAPI", data => {
@@ -51,23 +52,19 @@ export default function Room(props) {
     return gallery;
   });
 
-  console.log(gallery); 
-
   const displayImages = () => {
-  console.log('logged!');
     if (gallery == 'null' || (gallery.length <= 0)) {
       console.log('no images');
       return (
         <h2>Images coming soon...</h2>
       )
     } else {
-      // return (<h2>images</h2>)
       return (
         gallery.map((entry) => {
           return (
             <div>
-            <img id="gallery-image" src={`data:image/png;base64,${entry.image}`} alt="submitted-drawing"></img>
-            <p>drawn by {entry.user}</p>
+              <img id="gallery-image" src={`data:image/png;base64,${entry.image}`} alt="submitted-drawing"></img>
+              <p>drawn by {entry.user}</p>
             </div>
           )
         })
@@ -77,12 +74,7 @@ export default function Room(props) {
 
   if (!room) {
     return <div>Not found</div>;
-  } else {
-    console.log(room);
   }
-
-
- 
 
 
   return (
@@ -91,28 +83,28 @@ export default function Room(props) {
       <Link to="/">Back To Index</Link>
       <h2>it's {response}</h2>
 
-        <Row xs="auto">
-          <Col sm="7"> 
-            <CanvasContainer>
-              <h3>Leave a cool drawing for other members of this room :)</h3>
+      <Row xs="auto">
+        <Col sm="7"> 
+          <CanvasContainer>
+            <h3>Leave a cool drawing for other members of this room :)</h3>
               <Canvas userId={params.userId} roomId={params.id} history={props.history} />
-            </CanvasContainer>
-          </Col>
+          </CanvasContainer>
+        </Col>
        
       
-      <Col id="gallery-and-chat" sm="5">
-        <GalleryContainer>
-          <h3>gallery</h3>
-          <Gallery>  
-            {displayImages()}
-          </Gallery>  
-        </GalleryContainer>
+        <Col id="gallery-and-chat" sm="5">
+          <GalleryContainer>
+            <h3>gallery</h3>
+              <Gallery>  
+                {displayImages()}
+              </Gallery>  
+          </GalleryContainer>
 
-        <Chat/>
+        <Chat room={params.id}/>
   
-      </Col>
-    </Row>
-      </Container>
+        </Col>
+      </Row>
+    </Container>
 
   )
 }

@@ -8,7 +8,6 @@ import styled from 'styled-components';
 
 export default function RoomIndex(props) {
   const rooms = useSelector(state => state.rooms);
-  console.log(rooms);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,7 +33,6 @@ export default function RoomIndex(props) {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target[0].value);
     props.history.push(`/room/${e.target[0].value}`);
   }
 

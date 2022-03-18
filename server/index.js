@@ -12,6 +12,8 @@ const jwt = require("jwt-simple");
 var router = express.Router();
 const keys = require("./config/keys");
 
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
+
 // DB Setup
 mongoose.connect(keys.MONGODB_URI, {
   useNewUrlParser: true,
@@ -37,19 +39,38 @@ const io = socketIo(server, {
 
 io.on("connection", (socket) => {
   console.log("New client connected");
+
   socket.on('join', ({ name, room }, callback) => {
+    console.log(name, room);
     const { error, user } = addUser({ id: socket.id, name, room });
+    
 
     if(error) return callback(error);
+    
 
     socket.join(user.room);
 
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
     socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
 
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+    socket.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
 
     callback();
+  });
+
+  socket.on('sendMessage', (message, callback) => {
+    console.log(message);
+    let name = message.user;
+    
+    const user = getUser(name);
+    
+    console.log('this is the user', user);
+    socket.to(user.room).emit('message', { user: user.name, text: message.text, timestamp: message.timestamp });
+
+    callback({
+      status: 'ok'
+
+    });
   });
   
 
@@ -60,9 +81,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit('my broadcast', `server: ${msg}`);
   });
 
-  socket.on('chat message', (msg) => {
-    socket.broadcast.emit('chat message', msg);
-  });
+  // socket.on('send message', (msg) => {
+  //   socket.broadcast.emit('send message', msg);
+  // });
 
 
   socket.on('drawing', (data) => {
@@ -107,14 +128,6 @@ app.use('/', authRoutes);
 app.get("/api", (req, res) => {
   res.json({message: "Hello from Express!"});
 });
-
-// // Have Node serve the files for our built React app
-// app.use(express.static(path.resolve(__dirname, '../client/build')));
-
-// // All other GET requests not handled before will return our React app
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-// });
 
 
 if (process.env.NODE_ENV === "production") {

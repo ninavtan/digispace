@@ -78,10 +78,6 @@ const updatePaintingStyle = (canvasContext, { tool, color }) => {
   });
 };
 
-const onDrawingEvent = (data) => {
-  console.log(data);
-}
-
 const getDrawPoints = (stage, image, lastPointerPosition) => {
   const imagePosition = {
     x: image.x(),
@@ -109,7 +105,6 @@ const getDrawPoints = (stage, image, lastPointerPosition) => {
 export default class PaintingArea extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     const { width, height, tool, color, erase } = this.props;
     const { canvas, canvasContext } = initCanvas(width, height);
 
@@ -131,8 +126,8 @@ export default class PaintingArea extends Component {
     // this.socket = socketIOClient(ENDPOINT);
 
     this.state = {currentLines: []};
-    console.log(this.state);
 
+    
 
     // this.socket.on('drawing', data => {
     //   debugger;
@@ -143,9 +138,6 @@ export default class PaintingArea extends Component {
   }
 
   drawLine(p1, p2) {
-    // debugger;
-      console.log(p1, p2);
-    
       this.canvasContext.beginPath();
       this.canvasContext.moveTo(p1.x, p1.y);
       this.canvasContext.lineTo(p2.x, p2.y);
@@ -195,7 +187,6 @@ export default class PaintingArea extends Component {
   }
 
   sendDrawing(point1, point2) {
-    console.log('sent!');
     const data = {
       p1: {x: point1.x, y: point1.y},
       p2: {x: point2.x, y: point2.y}
@@ -212,7 +203,6 @@ export default class PaintingArea extends Component {
 
   componentDidMount() {
     this.stage = this.image.getStage();
-    console.log(this.stage);
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
@@ -227,7 +217,6 @@ export default class PaintingArea extends Component {
     // This is working! But is late. 
     // Previous drawing renders after clicking on canvas.
     this.socket.on('drawing', data => {
-      console.log(data);
       this.drawLine(data.p1, data.p2);
       // this.setState((prevState) => {lines: [...prevState, {data}]})
     })
