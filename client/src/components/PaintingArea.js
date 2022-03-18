@@ -127,8 +127,7 @@ export default class PaintingArea extends Component {
 
     this.state = {currentLines: []};
 
-    
-
+  
     // this.socket.on('drawing', data => {
     //   debugger;
     //   console.log(data);
@@ -214,34 +213,29 @@ export default class PaintingArea extends Component {
 
     this.socket = socketIOClient(ENDPOINT);
 
-    // This is working! But is late. 
-    // Previous drawing renders after clicking on canvas.
+    // Updating the state forces a re-render which renders the drawing!
     this.socket.on('drawing', data => {
       this.drawLine(data.p1, data.p2);
-      // this.setState((prevState) => {lines: [...prevState, {data}]})
+      this.updateState(data);
+      
     })
 
   }
 
+  updateState(data) {
+    this.setState((state) => {
+      console.log(state);
+      let copyOfState = {...state};
+      copyOfState.currentLines.push(data);
+      return copyOfState;
+    })
+  }
+
   update() {
     this.image.getLayer().batchDraw();
-
-    // This doesn't work.
-    // Heavy -- wrong
-    // this.socket.on('drawing', data => {
-    //   this.drawLine(this.canvasContext, data.p1, data.p2);
-    // })
-   
   }
 
   render() {
-   
-    // This does not work -- is really heavy.
-    // this.socket.on('drawing', data => {
-    //   console.log('socketina!')
-    //   this.drawLine(data.p1, data.p2);
-    // })
-
     const { x, y, width, height, tool, color, image } = this.props;
     const { canvas, canvasContext } = this;   
 
