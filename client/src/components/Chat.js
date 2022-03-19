@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import socketIOClient from "socket.io-client";
 import ChatTable from './ChatTable';
 
-const ENDPOINT = 'https://calm-basin-65498.herokuapp.com';
+// const ENDPOINT = 'https://calm-basin-65498.herokuapp.com';
 
-// const ENDPOINT = "http://127.0.0.1:3001";
+const ENDPOINT = "http://127.0.0.1:3001";
 
 const socket = socketIOClient(ENDPOINT);
 
@@ -35,8 +35,8 @@ const Chat = (props) => {
 
  useEffect(() => {
     socket.on('message', message => {
-    console.log('From the server!', message);
-    setMessages(messages => [ ...messages, message ]);
+      console.log('From the server!', message);
+      setMessages(messages => [ ...messages, message ]);
   });
 
  }, []);

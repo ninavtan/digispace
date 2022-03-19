@@ -1,7 +1,8 @@
 import React, {useState, useRef, useEffect} from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
-import PaintingArea from './PaintingArea';
+// import PaintingArea from './PaintingArea';
+import PaintingArea from './PaintArea'
 import { POST_GALLERY_IMAGE } from '../redux/actions/types';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchGalleryImages, postGalleryImage } from '../redux/actions';

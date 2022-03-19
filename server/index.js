@@ -76,15 +76,11 @@ io.on("connection", (socket) => {
   
   getApiAndEmit(socket);
 
-  socket.on('my message', (msg) => {
-    socket.broadcast.emit('my broadcast', `server: ${msg}`);
-  });
-
-  socket.on('drawing', (data) => {
-    // not getting p1 values, only p2!
-    // console.log(data);
-    // socket.broadcast.emit('drawing', data);
+  socket.on('drawing', (data, callback) => {
     socket.emit('drawing', data);
+    callback({
+      status: 'ok'
+    });
   })
 });
 

@@ -7,10 +7,10 @@ import { Html } from 'react-konva-utils';
 // import { subscribeToChat } from "./socketio.service";
 
 // Dev
-// const ENDPOINT = "http://127.0.0.1:3001";
+const ENDPOINT = "http://127.0.0.1:3001";
 
 // Prod
-const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
+// const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
 
 
 const initCanvas = (width, height) => {
@@ -177,27 +177,27 @@ export default class PaintingArea extends Component {
 
     this.drawLine(point1, point2);
 
-    
     this.lastPointerPosition = pointerPosition;
     this.update();
 
-    // this.sendDrawing(point1, point2);
-
   }
+
+  // socket.emit('sendMessage', message, (response) => {
+  //   setMessages([...messages, message]);
+  //   console.log(response.status);
+  //   messageInput.value = '';
+  // });
 
   sendDrawing(point1, point2) {
     const data = {
       p1: {x: point1.x, y: point1.y},
       p2: {x: point2.x, y: point2.y}
     }
-    // state:
-    // [{p1, p2}]
-    this.socket.emit('drawing', data)
-    // this.setState((prevState) => {
-    //   return {
-    //     lines: [...prevState, {data}]
-    //   };
-    // })
+    
+    this.socket.emit('drawing', data, (response) => {
+      this.updateState(data);
+      console.log(response);
+    })
   }
 
   componentDidMount() {
@@ -215,7 +215,9 @@ export default class PaintingArea extends Component {
 
     // Updating the state forces a re-render which renders the drawing!
     this.socket.on('drawing', data => {
+      console.log('data from server', data);
       this.drawLine(data.p1, data.p2);
+      this.update();
       this.updateState(data);
       
     })
@@ -224,7 +226,6 @@ export default class PaintingArea extends Component {
 
   updateState(data) {
     this.setState((state) => {
-      console.log(state);
       let copyOfState = {...state};
       copyOfState.currentLines.push(data);
       return copyOfState;
@@ -237,6 +238,7 @@ export default class PaintingArea extends Component {
 
   render() {
     const { x, y, width, height, tool, color, image } = this.props;
+    
     const { canvas, canvasContext } = this;   
 
     updatePaintingStyle(canvasContext, { tool, color });
