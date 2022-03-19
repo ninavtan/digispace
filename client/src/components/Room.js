@@ -17,8 +17,8 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 
-const ENDPOINT = "http://127.0.0.1:3001";
-// const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
+// const ENDPOINT = "http://127.0.0.1:3001";
+const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
 
 
 export default function Room(props) {

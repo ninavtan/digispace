@@ -7,10 +7,10 @@ import { Html } from 'react-konva-utils';
 // import { subscribeToChat } from "./socketio.service";
 
 // Dev
-const ENDPOINT = "http://127.0.0.1:3001";
+// const ENDPOINT = "http://127.0.0.1:3001";
 
 // Prod
-// const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
+const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
 
 
 const initCanvas = (width, height) => {
