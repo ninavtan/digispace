@@ -123,16 +123,7 @@ export default class PaintingArea extends Component {
     this.clearCanvas = this.clearCanvas.bind(this);
     this.socketRef = React.createRef();
 
-    // this.socket = socketIOClient(ENDPOINT);
-
     this.state = {currentLines: []};
-
-  
-    // this.socket.on('drawing', data => {
-    //   debugger;
-    //   console.log(data);
-    //   this.drawLine(data.p1, data.p2);
-    // })
 
   }
 
@@ -196,12 +187,15 @@ export default class PaintingArea extends Component {
     
     this.socket.emit('drawing', data, (response) => {
       this.updateState(data);
-      console.log(response);
     })
   }
 
   componentDidMount() {
     this.stage = this.image.getStage();
+
+    console.log('stage', this.stage);
+    console.log(`image`, this.image);
+
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);
@@ -210,12 +204,11 @@ export default class PaintingArea extends Component {
     btn.innerHTML = "Clear Canvas";
     btn.onclick = () => this.clearCanvas();
     settings.appendChild(btn);
-
+    
     this.socket = socketIOClient(ENDPOINT);
 
     // Updating the state forces a re-render which renders the drawing!
     this.socket.on('drawing', data => {
-      console.log('data from server', data);
       this.drawLine(data.p1, data.p2);
       this.update();
       this.updateState(data);
@@ -238,7 +231,7 @@ export default class PaintingArea extends Component {
 
   render() {
     const { x, y, width, height, tool, color, image } = this.props;
-    
+
     const { canvas, canvasContext } = this;   
 
     updatePaintingStyle(canvasContext, { tool, color });

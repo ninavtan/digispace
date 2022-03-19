@@ -77,7 +77,8 @@ io.on("connection", (socket) => {
   getApiAndEmit(socket);
 
   socket.on('drawing', (data, callback) => {
-    socket.emit('drawing', data);
+    console.log(data);
+    socket.broadcast.emit('drawing', data);
     callback({
       status: 'ok'
     });

@@ -12,9 +12,9 @@ export default function PaintingArea(props) {
 
   const { canvas, canvasContext } = initCanvas(props.width, props.height);
 
-  let image = props.image;
+  // let image = props.image;
 
-  console.log(image);
+  console.log(this.image);
 
   useEffect(() => {
 
@@ -45,7 +45,7 @@ export default function PaintingArea(props) {
 
   
   function update() {
-    image.getLayer().batchDraw();
+    this.image.getLayer().batchDraw();
   }
 
   function render() {
@@ -85,10 +85,10 @@ export default function PaintingArea(props) {
         y={props.y}
         width={props.width}
         height={props.height}
-        // image={canvas}
+        image={canvas}
         stroke={"green"}
         ref={node => {
-          image = node;
+          this.image = node;
         }}
         erase={() => clearCanvas()}
       />
