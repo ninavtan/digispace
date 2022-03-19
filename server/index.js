@@ -63,6 +63,7 @@ io.on("connection", (socket) => {
     let name = message.user;
     
     const user = getUser(name);
+    console.log(user);
     
     socket.to(user.room).emit('message', { user: user.name, text: message.text, timestamp: message.timestamp });
 

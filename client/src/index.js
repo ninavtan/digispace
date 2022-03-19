@@ -11,10 +11,18 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import socketIOClient from "socket.io-client";
+
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(rootReducer, {}, composeEnhancers(applyMiddleware(thunk)));
+
+
+// const ENDPOINT = "http://127.0.0.1:3001";
+const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
+const socket = socketIOClient(ENDPOINT);
+
 
 ReactDOM.render(
   <Provider store={store}>
@@ -22,7 +30,7 @@ ReactDOM.render(
         <Switch>
           <Header>
             <Route exact path='/' component={RoomIndex} />
-            <Route path="/room/:id" component={Room} />
+            <Route path="/room/:id" socket={socket} component={Room} />
           </Header>
         </Switch>
     </BrowserRouter>

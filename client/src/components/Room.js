@@ -22,7 +22,7 @@ const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
 
 
 export default function Room(props) {
-  console.log(`Room props: ${props}`);
+  console.log(`Room props: ${JSON.stringify(props)}`);
 
   const dispatch = useDispatch();
   let params = useParams();
@@ -31,12 +31,12 @@ export default function Room(props) {
   //////////////////////////// socket.io (in-progress) ///////////////////////
   const [response, setResponse] = useState("");
 
-  useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
-    socket.on("FromAPI", data => {
-      setResponse(data);
-    });
-  }, []);
+  // useEffect(() => {
+  //   const socket = socketIOClient(ENDPOINT);
+  //   socket.on("FromAPI", data => {
+  //     setResponse(data);
+  //   });
+  // }, []);
 
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.id))

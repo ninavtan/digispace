@@ -105,7 +105,7 @@ const getDrawPoints = (stage, image, lastPointerPosition) => {
 export default class PaintingArea extends Component {
   constructor(props) {
     super(props);
-    const { width, height, tool, color, erase } = this.props;
+    const { width, height, tool, color, erase} = this.props;
     const { canvas, canvasContext } = initCanvas(width, height);
 
     updatePaintingStyle(canvasContext, { tool, color });
@@ -124,7 +124,6 @@ export default class PaintingArea extends Component {
     this.socketRef = React.createRef();
 
     this.state = {currentLines: []};
-
   }
 
   drawLine(p1, p2) {
