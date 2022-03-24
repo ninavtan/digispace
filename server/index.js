@@ -76,10 +76,6 @@ io.on("connection", (socket) => {
 
     });
   });
-  
-
-  
-  getApiAndEmit(socket);
 
   socket.on('drawing', (data, callback) => {
     console.log(data);
