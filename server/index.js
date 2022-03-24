@@ -20,7 +20,6 @@ mongoose.connect(keys.MONGODB_URI, {
   useUnifiedTopology: true,
 }, function(err, result) {
   if (err) console.log(err)
-  console.log(result);
 });
 
 app.use(cors({
@@ -39,6 +38,11 @@ const io = socketIo(server, {
 
 io.on("connection", (socket) => {
   console.log("New client connected");
+  const transport = socket.conn.transport.name; // in most cases, "polling"
+  console.log(transport);
+  socket.conn.on("upgrade", () => {
+    const upgradedTransport = socket.conn.transport.name; // in most cases, "websocket"
+  });
 
   socket.on('join', ({ name, room }, callback) => {
     console.log(name, room);
@@ -85,12 +89,6 @@ io.on("connection", (socket) => {
     });
   })
 });
-
-const getApiAndEmit = socket => {
-  const response = new Date();
-  // Emitting a new message. Will be consumed by the client
-  socket.emit("FromAPI", response);
-};
 
 app.use(router);
 
