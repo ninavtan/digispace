@@ -10,7 +10,7 @@ import { Html } from 'react-konva-utils';
 // const ENDPOINT = "http://127.0.0.1:3001";
 
 // Prod
-const ENDPOINT = "https://calm-basin-65498.herokuapp.com/";
+const ENDPOINT = "https://digispace.herokuapp.com/";
 
 
 const initCanvas = (width, height) => {
