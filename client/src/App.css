@@ -11,6 +11,21 @@
   height: 100%;
 }
 
+.jumbotron-heading {
+  color: black;
+}
+
+.jumbotron-heading:hover {
+  color: purple;
+}
+
+.user-auth-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 2em;
+}
+
 .room-container {
   background-image: url("./components/background.png");
   height: 100%;

@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Room from './components/Room';
 import RoomIndex from './components/RoomIndex';
+import Login from './components/auth/Login';
 import rootReducer from './redux/reducers';
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from 'redux-thunk';
@@ -20,6 +21,7 @@ const store = createStore(rootReducer, {}, composeEnhancers(applyMiddleware(thun
 
 
 // const ENDPOINT = "http://127.0.0.1:3001";
+
 const ENDPOINT = "https://digispace.herokuapp.com/";
 const socket = socketIOClient(ENDPOINT);
 
@@ -31,6 +33,7 @@ ReactDOM.render(
           <Header>
             <Route exact path='/' component={RoomIndex} />
             <Route path="/room/:id" socket={socket} component={Room} />
+            <Route path="/login" component={Login} />
           </Header>
         </Switch>
     </BrowserRouter>

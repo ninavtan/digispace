@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import socketIOClient from "socket.io-client";
 import ChatTable from './ChatTable';
 
-const ENDPOINT = 'https://calm-basin-65498.herokuapp.com';
+const ENDPOINT = 'https://digispace.herokuapp.com/';
 
 // const ENDPOINT = "http://127.0.0.1:3001";
 

@@ -51,7 +51,6 @@ io.on("connection", (socket) => {
 
     if(error) return callback(error);
     
-
     socket.join(user.room);
 
     socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});

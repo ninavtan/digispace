@@ -11,7 +11,10 @@ const Header = (props) => {
   return (
     <div>
       <div className='jumbotron text-center'>
-          <Link to="/"><h1 className="jumbotron-heading">⭑･ﾟﾟ･*:༅｡.｡༅:*ﾟ:*:✼✿ DigiSpace</h1></Link>
+          <Link to="/" style={{ textDecoration: 'none' }}><h1 className="jumbotron-heading">DigiSpace</h1></Link>
+            <h2>⭑･ﾟﾟ･*:༅｡.｡༅:*ﾟ:*:✼✿</h2>
+            <h5>Welcome to DigiSpace. A collaborative cyberspace that empowers collaboration and connection.</h5>
+            <h2>⭑･ﾟﾟ･*:༅｡.｡༅:*ﾟ:*:✼✿</h2>
         {props.children}
       </div>
     </div>
