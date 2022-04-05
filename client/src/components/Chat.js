@@ -3,12 +3,8 @@ import styled from 'styled-components';
 import socketIOClient from "socket.io-client";
 import ChatTable from './ChatTable';
 
-const ENDPOINT = 'https://digispace.herokuapp.com/';
-
-// const ENDPOINT = "http://127.0.0.1:3001";
-
+const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const socket = socketIOClient(ENDPOINT);
-
 
 const Chat = (props) => {
   const [name, setName] = useState('null');

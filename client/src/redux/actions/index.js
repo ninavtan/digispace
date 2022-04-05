@@ -3,9 +3,7 @@ import { FETCH_ROOMS, LOGIN_SUCCESS, LOGIN_FAIL, FETCH_CURRENT_ROOM, FETCH_GALLE
 
 import { authLogin } from "../../services/auth.service";
 
-const ROOT_URL = 'https://digispace.herokuapp.com/';
-// const ROOT_URL = "http://127.0.0.1:3001";
-
+const ROOT_URL = process.env.REACT_APP_API_ENDPOINT;
 
 export const fetchRooms = () => dispatch => {
   const url = `${ROOT_URL}/rooms`;
