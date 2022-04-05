@@ -22,7 +22,7 @@ const store = createStore(rootReducer, {}, composeEnhancers(applyMiddleware(thun
 
 // const ENDPOINT = "http://127.0.0.1:3001";
 
-const ENDPOINT = "https://digispace.herokuapp.com/";
+const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const socket = socketIOClient(ENDPOINT);
 
 

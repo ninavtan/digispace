@@ -6,12 +6,7 @@ import { Html } from 'react-konva-utils';
 // import { initiateSocketConnection } from "./socketio.service";
 // import { subscribeToChat } from "./socketio.service";
 
-// Dev
-const ENDPOINT = "http://127.0.0.1:3001";
-
-// Prod
-// const ENDPOINT = "https://digispace.herokuapp.com/";
-
+const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
 const initCanvas = (width, height) => {
   const canvas = document.createElement("canvas");
