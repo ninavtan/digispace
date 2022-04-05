@@ -20,6 +20,7 @@ mongoose.connect(keys.MONGODB_URI, {
   useUnifiedTopology: true,
 }, function(err, result) {
   if (err) console.log(err)
+  console.log(keys.MONGODB_URI)
 });
 
 app.use(cors({

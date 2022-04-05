@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import socketIOClient from "socket.io-client";
 import ChatTable from './ChatTable';
 
-const ENDPOINT = 'https://digispace.herokuapp.com/';
+// const ENDPOINT = 'https://digispace.herokuapp.com/';
 
-// const ENDPOINT = "http://127.0.0.1:3001";
+// const ENDPOINT  = "http://127.0.0.1:3001";
+const ENDPOINT = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_API_URL : process.env.REACT_APP_DEV_API_URL;
 
 const socket = socketIOClient(ENDPOINT);
 

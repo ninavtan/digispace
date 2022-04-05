@@ -8,35 +8,16 @@ import RoomHeader from './RoomHeader';
 import Chat from './Chat';
 import styled from 'styled-components';
 
-// import Gallery from './Gallery';
-import socketIOClient from "socket.io-client";
-
 /////////////////// React-Boostrap ////////////////
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-
-
-// const ENDPOINT = "http://127.0.0.1:3001";
-const ENDPOINT = "https://digispace.herokuapp.com/";
-
 
 export default function Room(props) {
   console.log(`Room props: ${JSON.stringify(props)}`);
 
   const dispatch = useDispatch();
   let params = useParams();
-
-
-  //////////////////////////// socket.io (in-progress) ///////////////////////
-  const [response, setResponse] = useState("");
-
-  // useEffect(() => {
-  //   const socket = socketIOClient(ENDPOINT);
-  //   socket.on("FromAPI", data => {
-  //     setResponse(data);
-  //   });
-  // }, []);
 
   useEffect(() => {
     dispatch(fetchCurrentRoom(params.id))
@@ -81,12 +62,11 @@ export default function Room(props) {
     <Container fluid className="room-container">
       <RoomHeader name={room.name}/>
       <Link to="/">Back To Index</Link>
-      <h2>it's {response}</h2>
 
       <Row xs="auto">
         <Col sm="7"> 
           <CanvasContainer>
-            <h3>Leave a cool drawing for other members of this room :)</h3>
+            <h3>Leave a drawing for other members of this room :)</h3>
               <Canvas userId={params.userId} roomId={params.id} history={props.history} />
           </CanvasContainer>
         </Col>

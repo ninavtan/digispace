@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { AuthContext } from "../../App";
 
 export default function Login() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const authContext = useContext(AuthContext);
 
   const { auth, setAuth } = useContext(AuthContext);
@@ -23,7 +23,7 @@ export default function Login() {
       .then((err, result) => {
         if (err) console.log(err)
         setAuth(true);
-        navigate("/home");
+        // navigate("/home");
       })
    
     // dispatch(loginUser(form[0].value, form[1].value));
