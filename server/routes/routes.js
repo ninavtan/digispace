@@ -1,131 +1,10 @@
 const router = require("express").Router();
-// Auth
-// const passport = require("passport");
-// const jwt = require("jwt-simple");
-// const ExtractJwt = require("passport-jwt").ExtractJwt;
-// const LocalStrategy = require("passport-local").Strategy;
-// const JwtStrategy = require("passport-jwt").Strategy;
-// const bcrypt = require("bcrypt");
 
-
-// Models
 const Room = require("../models/room.js");
 const Settings = require("../models/settings.js");
 const User = require("../models/user");
 const Image = require("../models/image");
 const user = require("../models/user");
-
-// const tokenForUser = function (user) {
-//   return jwt.encode(
-//     {
-//       sub: user.myID,
-//       iat: Math.round(Date.now() / 1000),
-//       exp: Math.round(Date.now() / 1000 + 5 * 60 * 60),
-//     },
-//     "bananas"
-//   );
-// };
-
-// passport.use(
-//   "login",
-//   new LocalStrategy( (username, password, done) => {
-//     console.log('This logs first');
-
-//     let authenticated;
-  
-//     User.findOne({ username: username }, ((err, foundUser) => {
-//       if (!foundUser) {
-//         console.log('no user found');
-//       } else {
-//       console.log(foundUser);
-//       bcrypt.compare(password, foundUser.password, function(err, isCorrect) {
-//         if (err) throw err;
-//         if (isCorrect) {
-//           authenticated = true;
-//           console.log('password decrypting is correct!');
-//         } else {
-//           !authenticated;
-//         }
-//         if (authenticated) {
-//           console.log("right password!");
-//           return done(null, { user: foundUser });
-//         } else {
-//           console.log('wrong password')
-//           return done(null, false);
-//         }
-//       })
-//     }
-//   }));
-//   })
-// );
-
-// const jwtOptions = {
-//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//   secretOrKey: "bananas",
-// };
-
-
-// passport.use(
-//   "jwt",
-//   new JwtStrategy(jwtOptions, function (payload, done) {
-//     return done(null, { myUser: "user", myID: payload.sub });
-//   })
-// );
-
-// const requireSignin = passport.authenticate("login", { session: false });
-// const requireAuth = passport.authenticate("jwt", { session: false });
-
-
-// router.post("/register", async (req, res) => {
-//   const user = req.body;
-
-//   // Check if username or email has been taken by another user
-//   const takenUsername = await User.findOne({ username: user.username });
-//   const takenEmail = await User.findOne({ email: user.email }); 
-
-//   if (takenUsername || takenEmail) {
-//     res.json({message: "Username or email has already been taken"})
-//   } else {
-//     await bcrypt.hash(user.password, 10, (err, hash) => {
-//       if (err) throw err;
-//       user.password = hash;
-//       const dbUser = new User({
-//         username: user.username.toLowerCase(),
-//         first_name: '',
-//         last_name: '',
-//         email: user.email.toLowerCase(),
-//         password: user.password,
-//         rooms: [],
-//         gallery: []
-//       });
-//       dbUser.save()
-//       console.log(user.password);
-//       res.json({message: "Success"});
-//   });
-//   }
-// })
-
-// // router.get("/login", function (req, res) {
-// //   // This route serves the HTML to the browser
-// //   res.sendFile(__dirname + "/login.html");
-// // });
-
-// router.post("/api/auth/signin", requireSignin, (req, res, next) => {
-//   console.log("Then this logs");
-//   res.send({
-//     token: tokenForUser(req.user),
-//     userInfo: req.user.user
-    
-//   });
-// });
-
-// router.get("/protected", requireAuth, function (req, res) {
-//   // This route will be secured to only logged in users eventually
-//   res.send("Access Granted!");
-
-// });
-
-// END OF AUTH ROUTES //
 
 // Get all of the rooms
 router.get("/rooms", (req, res, next) => {
@@ -138,16 +17,14 @@ router.get("/rooms", (req, res, next) => {
 })
 
 // Get all the :user's rooms
-router.get("/user/:user/rooms", (req, res, next) => {
-  const userId = req.params.user;
+router.get("/user/:email/rooms", (req, res, next) => {
 
-  let targetUserRooms = [];
-
-  User.findById( userId )
+  User.findOne( {email: req.params.email} )
     .populate("rooms")
     .exec((err, targetUser) => {
         if (err) return next(err);
-        res.send(targetUser.rooms);
+        (targetUser.rooms.length > 1) ? res.send(targetUser.rooms) : res.send('no rooms to show');
+        
     });
 });
 
@@ -183,6 +60,33 @@ router.get("/room/:roomId", (req, res, next) => {
   //   res.send(result);
   // })
 });
+
+// Fetch user info
+router.get("/user/:email", (req, res, next) => {
+
+  
+
+  // Find the target user, or create a new one if it doesn't exist.
+  User.findOne({ email: req.params.email })
+    .exec((err, targetUser) => {
+        if (err) return next(err);
+
+        if (targetUser) {
+          console.log(targetUser);
+          res.send(targetUser); 
+        } else {
+          let newUser = new User({
+          username: null,
+          email: req.params.email
+        });
+        newUser.save();
+        console.log(newUser);
+        res.send(newUser);
+      };
+    });
+});
+
+
 
 // Create a new room
 router.post("/user/:userId/room/new", (req,res,next) => {
