@@ -13,7 +13,6 @@ const roomSchema = new schema.Entity('rooms', undefined, {
 export default function roomsReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case FETCH_ROOMS:
-      console.log(action.payload);
       const normalizedData = normalize(action.payload, [roomSchema]);
       
       return {
@@ -25,8 +24,3 @@ export default function roomsReducer(state = DEFAULT_STATE, action) {
       return state;
   }
 }
-
-// map over action.payload
-// action.payload.map(room => {
-  /// {...state, name: room.name, user: room.user, roomSettings: room.roomSettings, authUsers: room.authUsers}
-// })

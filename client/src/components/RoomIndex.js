@@ -38,7 +38,7 @@ export default function RoomIndex(props) {
 
   return (
     <div>
-      <div className="text-xs-right">
+      {/* <div className="text-xs-right">
         <label>type in a room id</label>
         <form onSubmit={handleSearchSubmit}>
           <input
@@ -47,7 +47,7 @@ export default function RoomIndex(props) {
           ></input>
           <button type="submit">go!</button>
           </form>
-      </div>
+      </div> */}
       <br></br>
       <h3>Featured Rooms</h3>
       <RoomList className="list-group">

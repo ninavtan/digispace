@@ -7,7 +7,6 @@ const Image = require("../models/image");
 const UserSchema = new Schema({
     username: {
         type: String,
-        required: true,
     },
     password: String,
     first_name: String,

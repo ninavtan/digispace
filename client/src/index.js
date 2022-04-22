@@ -6,13 +6,26 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/Header';
 import Room from './components/Room';
 import RoomIndex from './components/RoomIndex';
-import Login from './components/auth/Login';
+import DigiSpaceIndex from './components/DigiSpace-Index';
+// import Login from './components/auth/Login';
+import Profile from './components/Profile';
+import NavBar from './components/nav-bar';
 import rootReducer from './redux/reducers';
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
+import Auth0ProviderWithHistory from './components/auth/auth0-provider-with-history';
+import { Auth0Provider, withAuthenticationRequired } from '@auth0/auth0-react';
+import { createBrowserHistory } from 'history';
 import socketIOClient from "socket.io-client";
+
+export const history = createBrowserHistory();
+
+const ProtectedRoute = ({ component, ...args }) => (
+  <Route component={withAuthenticationRequired(component)} {...args} />
+);
+
 
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -20,23 +33,40 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducer, {}, composeEnhancers(applyMiddleware(thunk)));
 
 
-// const ENDPOINT = "http://127.0.0.1:3001";
-
 const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const socket = socketIOClient(ENDPOINT);
 
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+  const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
+const onRedirectCallback = (appState) => {
+  history.replace(appState?.returnTo || window.location.pathname);
+};
+
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <Provider store={store}>
+      <Router history={history}>
         <Switch>
           <Header>
             <Route exact path='/' component={RoomIndex} />
             <Route path="/room/:id" socket={socket} component={Room} />
-            <Route path="/login" component={Login} />
+            <Route path="/profile"
+            component={Profile} />
+            <ProtectedRoute path="/allrooms" component={DigiSpaceIndex} />
+
+            {/* <Route path="/allrooms" component={DigiSpaceIndex}/> */}
+            
           </Header>
         </Switch>
-    </BrowserRouter>
-  </Provider>,
+      </Router>
+      </Provider>
+    </Auth0Provider>,
 document.getElementById('root')
 );
