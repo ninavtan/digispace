@@ -7,13 +7,11 @@ const DEFAULT_STATE = {
 export default function userReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case FETCH_USER_INFO:
-      return {
-        email: action.payload,
-      };
+      return {...state, email: action.payload}
     case FETCH_USER_ROOMS:
-      return {
-        rooms: action.payload
-      }
+      return {...state, rooms: action.payload}
+        // rooms: action.payload
+      
   default:
     return state;
   }

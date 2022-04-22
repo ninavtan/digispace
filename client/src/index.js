@@ -14,10 +14,17 @@ import rootReducer from './redux/reducers';
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import Auth0ProviderWithHistory from './components/auth/auth0-provider-with-history';
+import { Auth0Provider, withAuthenticationRequired } from '@auth0/auth0-react';
+import { createBrowserHistory } from 'history';
 import socketIOClient from "socket.io-client";
-import { Nav, Navbar } from 'react-bootstrap';
+
+export const history = createBrowserHistory();
+
+const ProtectedRoute = ({ component, ...args }) => (
+  <Route component={withAuthenticationRequired(component)} {...args} />
+);
 
 
 
@@ -29,23 +36,37 @@ const store = createStore(rootReducer, {}, composeEnhancers(applyMiddleware(thun
 const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 const socket = socketIOClient(ENDPOINT);
 
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+  const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
+const onRedirectCallback = (appState) => {
+  history.replace(appState?.returnTo || window.location.pathname);
+};
+
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-    <Auth0ProviderWithHistory>
+    <Auth0Provider
+      domain={domain}
+      clientId={clientId}
+      redirectUri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <Provider store={store}>
+      <Router history={history}>
         <Switch>
           <Header>
             <Route exact path='/' component={RoomIndex} />
             <Route path="/room/:id" socket={socket} component={Room} />
             <Route path="/profile"
             component={Profile} />
-            <Route path="/allrooms" component={DigiSpaceIndex}/>
+            <ProtectedRoute path="/allrooms" component={DigiSpaceIndex} />
+
+            {/* <Route path="/allrooms" component={DigiSpaceIndex}/> */}
             
           </Header>
         </Switch>
-        </Auth0ProviderWithHistory>
-    </BrowserRouter>
-  </Provider>,
+      </Router>
+      </Provider>
+    </Auth0Provider>,
 document.getElementById('root')
 );

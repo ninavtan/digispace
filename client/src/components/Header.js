@@ -13,20 +13,14 @@ const Header = (props) => {
     history.goBack();
   }
 
-  // const { isLoading } = useAuth0();
-
-  // if (isLoading) {
-  //   return <h1>This is loading!</h1>
-  // }
 
   return (
-    <div>
+    <div id="jumbotron-navbar-container">
+      <NavBar/>
       <div className='jumbotron text-center'>
           <Link to="/" style={{ textDecoration: 'none' }}><h1 className="jumbotron-heading">DigiSpace</h1></Link>
             <h5>Welcome to DigiSpace. A corner of cyberspace that empowers collaboration and connection.</h5>
             <h2>⭑･ﾟﾟ･*:༅｡.｡༅:*ﾟ:*:✼✿</h2>
-
-            <NavBar/>
             
         {props.children}
       </div>

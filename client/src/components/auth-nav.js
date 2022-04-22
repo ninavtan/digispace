@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchUserInfo } from '../redux/actions';
 
 import { useAuth0 } from '@auth0/auth0-react';
@@ -28,14 +28,19 @@ const AuthNav = () => {
 
   return (
     <div className="auth-nav-main-div">
-      <AuthenticationButton />
+
+      <div className="auth-button-container">
+        <AuthenticationButton />
+      </div>
+
       {isAuthenticated ? 
         <div className="authed-links">
+         
           <button>
             <Link to={newTo}>view digispaces</Link>
           </button>
 
-         <Link to='/profile' className='account-link'>Account</Link>
+         <Link to='/profile' className='account-link'>{user.email}</Link>
         </div>
         : null}
      

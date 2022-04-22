@@ -15,11 +15,18 @@ const DigiSpaceIndex = (props) => {
   useEffect(() => {
    dispatch(fetchUserRooms(props.location.userEmail));
   }, []);
+
+  const userRooms = useSelector((state) => state.user.rooms)
+
+  console.log(userRooms);
+
   // Display clickable links here
 
   return (
     <div>
       <h1>DigiSpace Index</h1>
+      {/* {(!userRooms ||userRooms.length == 0) ? <h2>no rooms to show</h2> : <h2>hi!</h2>} */}
+      <h2>{userRooms}</h2>
     </div>
   )
 };

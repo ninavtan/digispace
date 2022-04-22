@@ -6,6 +6,10 @@
   font-style: normal;
 }
 
+#jumbotron-navbar-container {
+  margin: 0 auto;
+}
+
 .jumbotron {
   background-image: url("./components/background.png");
   height: 100%;
@@ -13,6 +17,7 @@
 
 .jumbotron-heading {
   color: black;
+  margin: 0 auto;
 }
 
 .jumbotron-heading:hover {
@@ -28,6 +33,12 @@
 
 .auth-nav-main-div {
   background-color: purple;
+  width: 100%;
+}
+
+.auth-button-container {
+  position: absolute;
+  right: 0;
 }
 
 .nav-container {
@@ -41,6 +52,7 @@
   margin: 0.5em 1em;
   align-items: center;
   align-self: center;
+  justify-content: space-evenly;
 }
 
 .account-link {

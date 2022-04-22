@@ -23,9 +23,14 @@ router.get("/user/:email/rooms", (req, res, next) => {
     .populate("rooms")
     .exec((err, targetUser) => {
         if (err) return next(err);
-        (targetUser.rooms.length > 1) ? res.send(targetUser.rooms) : res.send('no rooms to show');
+        if (!targetUser) { 
+          res.send('no user to show')
+         } else { 
+          (targetUser.rooms.length > 1) ? res.send(targetUser.rooms) : res.send('no rooms to show');
+         }
         
     });
+  
 });
 
 // Fetches a specific room
