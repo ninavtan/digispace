@@ -6,10 +6,6 @@ const Settings = require("../models/settings.js");
 const User = require("../models/user.js");
 const app = express();
 const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
-
-// const authRoutes = require('../routes/auth');
-// app.use('/', authRoutes);
 
 router.get("/nina", (req, res, next) => {       
   res.json({message: "HI NINA~"});

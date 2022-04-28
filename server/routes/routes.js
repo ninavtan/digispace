@@ -18,6 +18,8 @@ router.get("/rooms", (req, res, next) => {
 
 // Get all the :user's rooms
 router.get("/user/:email/rooms", (req, res, next) => {
+  // Find user ObjectId through email
+  const user = User.find({ email: req.params.email });
 
   let userId;
 
@@ -71,8 +73,6 @@ router.get("/room/:roomId", (req, res, next) => {
 
 // Fetch user info
 router.get("/user/:email", (req, res, next) => {
-
-  
 
   // Find the target user, or create a new one if it doesn't exist.
   User.findOne({ email: req.params.email })
