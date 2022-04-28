@@ -7,7 +7,7 @@ import Header from './components/Header';
 import Room from './components/Room';
 import RoomIndex from './components/RoomIndex';
 import DigiSpaceIndex from './components/DigiSpace-Index';
-// import Login from './components/auth/Login';
+import { Create } from './components/Create';
 import Profile from './components/Profile';
 import NavBar from './components/nav-bar';
 import rootReducer from './redux/reducers';
@@ -55,14 +55,12 @@ ReactDOM.render(
       <Router history={history}>
         <Switch>
           <Header>
-            <Route exact path='/' component={RoomIndex} />
+            <Route exact path="/" component={RoomIndex} />
             <Route path="/room/:id" socket={socket} component={Room} />
             <Route path="/profile"
             component={Profile} />
             <ProtectedRoute path="/allrooms" component={DigiSpaceIndex} />
-
-            {/* <Route path="/allrooms" component={DigiSpaceIndex}/> */}
-            
+            <ProtectedRoute path="/create" component={Create} />
           </Header>
         </Switch>
       </Router>

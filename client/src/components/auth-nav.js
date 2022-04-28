@@ -15,13 +15,8 @@ const AuthNav = () => {
 
   (isAuthenticated) ? console.log('auth!') : console.log('not auth');
 
-  // TODO
-  // dispatch Redux action that will send user info to backend
   (user) ? dispatch(fetchUserInfo(user.email)) : console.log('no user');
 
-  // Backend will find user with same user (email) ? and populate navbar I guess
-  
-  // Create Rooms component that will show the DigiSpaces that user has
   let newTo;
   (user) ? newTo = {pathname: "/allrooms", 
   userEmail: user.email } : newTo = {pathname: "/allrooms"}
