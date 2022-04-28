@@ -23,7 +23,7 @@ router.get("/create-new-data", (req, res, next) => {
   // });
 
   let roomOne = new Room({
-    name: `nina's fantasy world`,
+    name: `test digispace`,
     user: null,
     roomSettings: null,
     authUsers: [],
@@ -31,7 +31,7 @@ router.get("/create-new-data", (req, res, next) => {
   });
 
   let settingsOne = new Settings({
-    name: `fantasy world settings`,
+    name: `digispace settings`,
     userCreated: null,
     roomId: null,
     collabCanvasFunc: true,

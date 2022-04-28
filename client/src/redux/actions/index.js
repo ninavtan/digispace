@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_ROOMS, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE, FETCH_USER_INFO, FETCH_USER_ROOMS } from "./types";
+import { FETCH_ROOMS, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE, FETCH_USER_INFO, FETCH_USER_ROOMS, CREATE_NEW_ROOM } from "./types";
 
 const ROOT_URL = process.env.REACT_APP_API_ENDPOINT;
 
@@ -72,4 +72,8 @@ export const fetchUserRooms = (email) => dispatch => {
       dispatch({ type: FETCH_USER_ROOMS, payload: response.data });
     })
     .catch(err => console.log(err));
+}
+
+export const createNewRoom = (email, canvas, gallery, chat) => {
+  // Post request
 }

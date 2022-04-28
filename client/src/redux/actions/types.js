@@ -5,3 +5,4 @@ export const POST_GALLERY_IMAGE = 'post_gallery_image';
 
 export const FETCH_USER_INFO = 'fetch_user_info';
 export const FETCH_USER_ROOMS = 'fetch_user_rooms';
+export const CREATE_NEW_ROOM = 'create_new_room';

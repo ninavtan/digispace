@@ -21,13 +21,19 @@ router.get("/user/:email/rooms", (req, res, next) => {
   // Find user ObjectId through email
   const user = User.find({ email: req.params.email });
 
-  // Query all rooms with this user
-  Room.find({ user: user._id })
-    .exec(function (err, rooms) {
-      if (err) console.log(err);
+  let userId;
+
+  User.find({ email: req.params.email })
+    .exec((err, targetUser) => {
+        if (err) return next(err);
+        userId = targetUser._id;
+    });
+
+  Room.find({ user: userId })
+    .exec((err, rooms) => {
+      if (err) return next(err);
       res.send(rooms);
     })
-  
   
   
 });
