@@ -7,15 +7,12 @@ import Header from './components/Header';
 import Room from './components/Room';
 import RoomIndex from './components/RoomIndex';
 import DigiSpaceIndex from './components/DigiSpace-Index';
-// import Login from './components/auth/Login';
 import Profile from './components/Profile';
-import NavBar from './components/nav-bar';
 import rootReducer from './redux/reducers';
 import { createStore, applyMiddleware, compose } from "redux";
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { Router, Route, Switch } from "react-router-dom";
-import Auth0ProviderWithHistory from './components/auth/auth0-provider-with-history';
 import { Auth0Provider, withAuthenticationRequired } from '@auth0/auth0-react';
 import { createBrowserHistory } from 'history';
 import socketIOClient from "socket.io-client";
@@ -25,8 +22,6 @@ export const history = createBrowserHistory();
 const ProtectedRoute = ({ component, ...args }) => (
   <Route component={withAuthenticationRequired(component)} {...args} />
 );
-
-
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -18,18 +18,17 @@ router.get("/rooms", (req, res, next) => {
 
 // Get all the :user's rooms
 router.get("/user/:email/rooms", (req, res, next) => {
+  // Find user ObjectId through email
+  const user = User.find({ email: req.params.email });
 
-  User.findOne( {email: req.params.email} )
-    .populate("rooms")
-    .exec((err, targetUser) => {
-        if (err) return next(err);
-        if (!targetUser) { 
-          res.send('no user to show')
-         } else { 
-          (targetUser.rooms.length > 1) ? res.send(targetUser.rooms) : res.send('no rooms to show');
-         }
-        
-    });
+  // Query all rooms with this user
+  Room.find({ user: user._id })
+    .exec(function (err, rooms) {
+      if (err) console.log(err);
+      res.send(rooms);
+    })
+  
+  
   
 });
 
@@ -68,8 +67,6 @@ router.get("/room/:roomId", (req, res, next) => {
 
 // Fetch user info
 router.get("/user/:email", (req, res, next) => {
-
-  
 
   // Find the target user, or create a new one if it doesn't exist.
   User.findOne({ email: req.params.email })

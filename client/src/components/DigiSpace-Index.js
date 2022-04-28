@@ -20,13 +20,17 @@ const DigiSpaceIndex = (props) => {
 
   console.log(userRooms);
 
-  // Display clickable links here
-
+  const displayUserRooms = () => userRooms.map((room) => {
+    return (
+      // DigiSpace tile
+      <h1>{room.name}</h1>
+    )
+  })
   return (
     <div>
       <h1>DigiSpace Index</h1>
-      {/* {(!userRooms ||userRooms.length == 0) ? <h2>no rooms to show</h2> : <h2>hi!</h2>} */}
-      <h2>{userRooms}</h2>
+      {(!userRooms ||userRooms.length == 0) ? <h2>no rooms to show</h2> : displayUserRooms()}
+      
     </div>
   )
 };
