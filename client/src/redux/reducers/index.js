@@ -8,7 +8,7 @@ import galleryReducer from "./gallery-reducer";
 const rootReducer = combineReducers({
   rooms: roomsReducer,
   user: userReducer,
-  currentRoom: currentRoomReducer,
+  currentRoomSettings: currentRoomReducer,
   // auth: authReducer,
   gallery: galleryReducer,
 });

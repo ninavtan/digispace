@@ -12,7 +12,8 @@ const SettingsSchema = new Schema({
     collabCanvasFunc: Boolean,
     collabCanvasImg: String,
     sharedMedia: String,
-    chatFunc: Boolean
+    chatFunc: Boolean,
+    galleryFunc: Boolean,
 });
 
 module.exports = mongoose.model("Settings", SettingsSchema);

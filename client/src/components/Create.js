@@ -1,18 +1,37 @@
+import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import styled from "styled-components"
 import { Form } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { createNewDigiSpace } from '../redux/actions';
+
+
+
 export const Create = (props) => {
+
+  const dispatch = useDispatch();
+  const [spaceName, setSpaceName] = useState(null);
   const { user } = useAuth0();
 
-  console.log(user.email);
-
-  const submitCreateDigiSpace = (e) => {
+  const submitCreateDigiSpace = async (e) => {
     e.preventDefault();
-    console.log(e.target[0].checked);
-    // dispatch createNewDigiSpace(email, collabCanvas, gallery, chat)
+    await dispatch(createNewDigiSpace(user.email, spaceName, e.target[0].checked, e.target[1].checked, e.target[2].checked));
+    loadIndex();
+
   }
+
+  const loadIndex = () => {
+    props.history.replace('/allrooms');
+  }
+  
+
   return (
     <CreatePageDiv>
+       <NameInput>
+        <h5>Name your space.</h5>
+        <input type="text" name="space-name" placeholder="My New DigiSpace" onChange={e => setSpaceName(e.target.value)}></input>
+       </NameInput>
       <h2>Personalize your DigiSpace.</h2>
       <br></br>
       <Form onSubmit={submitCreateDigiSpace}>
@@ -50,8 +69,6 @@ export const Create = (props) => {
         </ChatSelect>
        
       </FeatureSelection>
-       
-    
       <br></br>
       <SubmitButton type='submit'>Submit</SubmitButton>
       </Form>
@@ -85,4 +102,9 @@ display: block;
 
 const GallerySelect = styled.div`
 display: block;
+`
+
+const NameInput = styled.div`
+display: block;
+margin-bottom: 2em;
 `

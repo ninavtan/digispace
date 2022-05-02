@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_ROOMS, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE, FETCH_USER_INFO, FETCH_USER_ROOMS, CREATE_NEW_ROOM } from "./types";
+import { FETCH_ROOMS, FETCH_CURRENT_ROOM, FETCH_GALLERY_IMAGES, POST_GALLERY_IMAGE, FETCH_USER_INFO, FETCH_USER_ROOMS, CREATE_NEW_DIGISPACE } from "./types";
 
 const ROOT_URL = process.env.REACT_APP_API_ENDPOINT;
 
@@ -16,16 +16,20 @@ export const fetchRooms = () => dispatch => {
 };
 
 export const fetchCurrentRoom = (roomId) => dispatch => {
-  const url = `${ROOT_URL}/room/${roomId}`;
+  const url = `${ROOT_URL}/room/${roomId}/settings`;
 
   axios.get(url)
   .then((response) => {
-    console.log(response);
+    console.log(response.data);
     dispatch({ type: FETCH_CURRENT_ROOM, payload: response.data })
   })
   .catch((err) => {
     console.log(`There was an error with fetching the user's current room`, err);
   }, { withCredentials: true })
+
+}
+
+export const fetchCurrentRoomSettings = (roomId) => dispatch => {
 
 }
 
@@ -74,6 +78,21 @@ export const fetchUserRooms = (email) => dispatch => {
     .catch(err => console.log(err));
 }
 
-export const createNewRoom = (email, canvas, gallery, chat) => {
+export const createNewDigiSpace = (email, name, canvas, gallery, chat) => dispatch => {
+  let newRoomData = {
+    user: email,
+    name: name,
+    canvas: canvas,
+    gallery: gallery,
+    chat: chat
+  }
+  console.log(newRoomData);
+
   // Post request
+  axios.post(`${ROOT_URL}/user/${email}/room/new`, newRoomData)
+  .then((response)=> {
+    console.log(response);
+    dispatch({ type: CREATE_NEW_DIGISPACE, payload: response.data});
+  })
+  .catch(err => console.log(err))
 }

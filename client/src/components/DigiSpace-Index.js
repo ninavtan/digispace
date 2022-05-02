@@ -14,7 +14,7 @@ const DigiSpaceIndex = (props) => {
 
   useEffect(() => {
    dispatch(fetchUserRooms(props.location.userEmail));
-  }, []);
+  }, [props.location]);
 
   const userRooms = useSelector((state) => state.user.rooms)
 
