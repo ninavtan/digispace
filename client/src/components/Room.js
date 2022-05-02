@@ -14,7 +14,6 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 
 export default function Room(props) {
-  console.log(`Room props: ${JSON.stringify(props)}`);
 
   const dispatch = useDispatch();
   let params = useParams();
@@ -31,6 +30,10 @@ export default function Room(props) {
 
   const gallery = useSelector(({ gallery }) => {
     return gallery;
+  });
+
+  const roomSettings = useSelector(({ currentRoomSettings }) => {
+    return currentRoomSettings;
   });
 
   const displayImages = () => {
@@ -57,7 +60,6 @@ export default function Room(props) {
     return <div>Not found</div>;
   }
 
-
   return (
     <Container fluid className="room-container">
       <RoomHeader name={room.name}/>
@@ -65,22 +67,23 @@ export default function Room(props) {
 
       <Row xs="auto">
         <Col sm="7"> 
-          <CanvasContainer>
-            <h3>Leave a drawing for other members of this room :)</h3>
-              <Canvas userId={params.userId} roomId={params.id} history={props.history} />
-          </CanvasContainer>
+        {(roomSettings.collabCanvasFunc) ? <CanvasContainer>
+            <h3>Leave a drawing for other members of this space :)</h3>
+              <Canvas userId={params.userId} roomId={params.id} history={props.history} /> </CanvasContainer> : null }
+          
         </Col>
        
       
         <Col id="gallery-and-chat" sm="5">
-          <GalleryContainer>
+          {(roomSettings.galleryFunc) ? <GalleryContainer>
             <h3>gallery</h3>
               <Gallery>  
                 {displayImages()}
               </Gallery>  
-          </GalleryContainer>
+          </GalleryContainer> : null }
+         
 
-        <Chat room={params.id}/>
+        {(roomSettings.chatFunc) ? <Chat room={params.id}/> : null }
   
         </Col>
       </Row>

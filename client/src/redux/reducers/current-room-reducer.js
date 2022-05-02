@@ -3,18 +3,20 @@ import { FETCH_CURRENT_ROOM } from "../actions/types";
 
 const DEFAULT_STATE = {
  name: null,
- user: null,
- roomSettings: null,
+ userCreated: null,
+ collabCanvasFunc: false,
+ chatFunc: false,
+ galleryFunc: false,
  authUsers: null,
- gallery: []
 };
 
 
 export default function currentRoomReducer(state = DEFAULT_STATE, action) {
   switch(action.type) {
     case FETCH_CURRENT_ROOM:
-      console.log(action.payload);
-      return {...state, name: action.payload.name, user: action.payload.user, roomSettings: action.payload.roomSettings, authUsers: action.payload.authUsers, gallery: action.payload.gallery };
+      console.log(action.payload[0]);
+     
+      return {...state, name: action.payload[0].name, userCreated: action.payload[0].userCreated, collabCanvasFunc: action.payload[0].collabCanvasFunc, chatFunc: action.payload[0].chatFunc, galleryFunc: action.payload[0].galleryFunc };
 
     default:
       return state;

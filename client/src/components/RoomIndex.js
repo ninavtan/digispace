@@ -49,7 +49,7 @@ export default function RoomIndex(props) {
           </form>
       </div> */}
       <br></br>
-      <h3>Featured Rooms</h3>
+      <h3>Featured DigiSpaces</h3>
       <RoomList className="list-group">
         {renderRooms()}
       </RoomList>

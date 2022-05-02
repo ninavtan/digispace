@@ -187,9 +187,6 @@ export default class PaintingArea extends Component {
   componentDidMount() {
     this.stage = this.image.getStage();
 
-    console.log('stage', this.stage);
-    console.log(`image`, this.image);
-
     this.image.on("mousedown touchstart", this.startPainting);
     this.stage.addEventListener("mouseup touchend", this.finishPainting);
     this.stage.addEventListener("mousemove touchmove", this.processPainting);

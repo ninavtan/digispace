@@ -9,7 +9,7 @@ const RoomSchema = new Schema({
     name: String,
     user: { type: Schema.Types.ObjectId, ref: "User" },
     roomSettings: { type: Schema.Types.ObjectId, ref: "Settings" },
-    authUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    authUsers: [],
     gallery: [{ type: Schema.Types.ObjectId, ref: "Image" }],
 });
 
