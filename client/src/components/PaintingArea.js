@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import socketIOClient from "socket.io-client";
 import Konva from "konva";
 import { Image, Rect } from "react-konva";
-import { Html } from 'react-konva-utils';
-// import { initiateSocketConnection } from "./socketio.service";
-// import { subscribeToChat } from "./socketio.service";
+
 
 const ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
 
@@ -167,12 +165,6 @@ export default class PaintingArea extends Component {
 
   }
 
-  // socket.emit('sendMessage', message, (response) => {
-  //   setMessages([...messages, message]);
-  //   console.log(response.status);
-  //   messageInput.value = '';
-  // });
-
   sendDrawing(point1, point2) {
     const data = {
       p1: {x: point1.x, y: point1.y},
@@ -236,7 +228,7 @@ export default class PaintingArea extends Component {
             width={width}
             height={height}
             image={canvas}
-            stroke={"green"}
+            // stroke={"green"}
             erase={(erase) => this.clearCanvas()}
             ref={node => {
               this.image = node;

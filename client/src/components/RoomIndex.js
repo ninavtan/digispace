@@ -5,8 +5,7 @@ import { fetchRooms } from "../redux/actions";
 import _ from 'lodash';
 import styled from 'styled-components';
 
-
-export default function RoomIndex(props) {
+export default function MainIndex(props) {
   const rooms = useSelector(state => state.rooms);
   const dispatch = useDispatch();
 
@@ -19,11 +18,9 @@ export default function RoomIndex(props) {
     if (!_.isEmpty(rooms) > 0) {
       return rooms.order.map((roomID) => {
         return (
-          <RoomList className="list-group-item" key={roomID}>
-            <Link to={`/room/${roomID}`}>
+            <Link to={`/room/${roomID}`} key={roomID} className="room-link">
               {rooms.entries[roomID].name}
             </Link>
-          </RoomList>
         );
       })
     } else {
@@ -31,36 +28,32 @@ export default function RoomIndex(props) {
     }
   }
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    props.history.push(`/room/${e.target[0].value}`);
-  }
-
   return (
     <div>
-      {/* <div className="text-xs-right">
-        <label>type in a room id</label>
-        <form onSubmit={handleSearchSubmit}>
-          <input
-            name="room-id"
-            placeholder="room id"
-          ></input>
-          <button type="submit">go!</button>
-          </form>
-      </div> */}
       <br></br>
       <h3>Featured DigiSpaces</h3>
-      <RoomList className="list-group">
-        {renderRooms()}
-      </RoomList>
+       
+          <RoomList>
+            {renderRooms()}
+          </RoomList>
+          
+     
     </div>
   )
 };
 
 const RoomList = styled.ul`
-  display: flex;  
-  border-radius: 4em;
-  height: 40%;
-  width: 50%;
-  margin: 0 auto;
+  height: 100%;
+  margin: 2em 4em;
+  display: flex;
+  justify-content: center;
+  padding: 2em;
+  flex-wrap: wrap;
+  border: 1px solid black;
 `
+
+// const RoomsListContainer = styled.div`
+//   display: flex;
+//   width: 100%;
+// `
+

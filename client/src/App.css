@@ -4,6 +4,7 @@
   font-family: gopher, sans-serif;
   font-weight: 700;
   font-style: normal;
+  overflow-x: hidden;
 }
 
 #jumbotron-navbar-container {
@@ -13,6 +14,7 @@
 .jumbotron {
   background-image: url("./components/background.png");
   height: 100%;
+  padding: none !important;
 }
 
 .jumbotron-heading {
@@ -34,6 +36,7 @@
 .auth-nav-main-div {
   background-color: purple;
   width: 100%;
+  margin: 0;
 }
 
 .auth-button-container {
@@ -44,6 +47,7 @@
 .nav-container {
   background-color: pink;
   display: flex;
+  margin: 0;
 }
 
 .authed-links {
@@ -112,4 +116,26 @@
 
 .form-select {
   width: 50%;
+}
+
+.room-link {
+  margin: 1em auto;
+  color: black;
+  max-height: 300px;
+  min-width: 150px;
+  padding: 1em;
+  border-radius: 60%;
+  border: 5px solid pink;
+  text-decoration: none;
+}
+.room-link:nth-child(odd) {
+  background-color: rgb(255, 137, 172);
+}
+
+.room-link:nth-child(even) {
+  background-color: rgb(200, 255, 137);
+}
+
+.room-link:hover {
+  color: aqua;
 }

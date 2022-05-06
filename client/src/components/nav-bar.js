@@ -7,7 +7,7 @@ import AuthNav from './auth-nav';
 const NavBar = () => {
 
   return (
-    <div className="nav-container mb-3">
+    <div className="nav-container">
        <AuthNav />
     </div>
   );

@@ -2,7 +2,6 @@ import React, {useState, useRef, useEffect} from 'react';
 import Konva from 'konva';
 import { Stage, Layer, Line, Text, Rect } from 'react-konva';
 import PaintingArea from './PaintingArea';
-// import PaintingArea from './PaintArea'
 import { POST_GALLERY_IMAGE } from '../redux/actions/types';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchGalleryImages, postGalleryImage } from '../redux/actions';
@@ -19,6 +18,12 @@ const Canvas = (props) => {
 
   const drawingRef = useRef(null);
 
+  let sceneHeight = window.innerHeight;
+  let sceneWidth = window.innerWidth;
+
+  let sketchWidth = window.innerWidth / 2;
+  let sketchHeight = window.innerHeight / 2;
+
   const handleChangeTool = event => {
     setTool(event.target.value);
   }
@@ -34,11 +39,18 @@ const Canvas = (props) => {
     let base64image = stage.toDataURL();
     dispatch(postGalleryImage(props.roomId, base64image, guestName))
     dispatch(fetchGalleryImages(props.roomId));
-    // props.history.push(`/room/${props.roomId}`);
   }
 
-  const sceneWidth = 500;
-  const sceneHeight = 500;
+  const resizeCanvas = () => {
+    sceneWidth = window.innerWidth / 2;
+    sceneHeight = window.innerHeight / 2;
+
+    sketchWidth = window.innerWidth / 2;
+    sketchHeight = window.innerHeight / 2;
+  }
+
+  window.addEventListener('resize', resizeCanvas(), false);
+ 
  
 
   return (
@@ -56,23 +68,23 @@ const Canvas = (props) => {
       </DrawingSettingsContainer>
 
     <div id="stage-parent">
-     <Stage height = {600} width = {600} ref={drawingRef} className="konva-stage">
+     <Stage height = {sceneHeight} width = {sceneWidth} ref={drawingRef} className="konva-stage">
       <Layer>
-        {/* Will hold image background */}
+        {/* Holds image background */}
         <Rect
-        x={75}
-        y={50}
+        x={0}
+        y={0}
         fill={"white"}
-        width={500}
-        height={500}>
+        width={sketchWidth}
+        height={sketchHeight}>
         </Rect>
 
         {/* User-interactive canvas */}
         <PaintingArea
-          x={75}
-          y={50}
-          width={500}
-          height={500}
+          x={0}
+          y={0}
+          width={sketchWidth}
+          height={sketchHeight}
           tool={tool}
           color={color}
           erase={erase}
@@ -97,8 +109,6 @@ const Canvas = (props) => {
       <Button type="submit" variant="outline-success">Save</Button>
       </Form>
     </div>
-
-    
   )
 };
 

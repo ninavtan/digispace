@@ -66,15 +66,14 @@ export default function Room(props) {
       <Link to="/">Back To Index</Link>
 
       <Row xs="auto">
-        <Col sm="7"> 
+        <Col sm={12} lg={7} md={7}> 
         {(roomSettings.collabCanvasFunc) ? <CanvasContainer>
             <h3>Leave a drawing for other members of this space :)</h3>
               <Canvas userId={params.userId} roomId={params.id} history={props.history} /> </CanvasContainer> : null }
-          
         </Col>
        
       
-        <Col id="gallery-and-chat" sm="5">
+        <Col id="gallery-and-chat" sm={12} md={4} lg={4} >
           {(roomSettings.galleryFunc) ? <GalleryContainer>
             <h3>gallery</h3>
               <Gallery>  
@@ -92,22 +91,19 @@ export default function Room(props) {
   )
 }
 const Gallery = styled.div`
-  height: 500px;
-  width: 500px;
+  max-height: 500px;
+  width: 110%;
   margin: 0 auto;
   text-align: center;
   border: solid black 1px;
   overflow-x:hidden;
   overflow-y:auto;
   
-  .placeholder{
-    margin: 2em;
-  }
 `
 
 const CanvasContainer = styled.div`
   border: 1px solid black;
-  // background-color: #DAEDBD;
+  background-color: #DAEDBD;
   text-align: center;
   margin: 0.5em auto;
   padding: 2em;
